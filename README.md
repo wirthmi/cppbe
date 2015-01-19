@@ -1,4 +1,4 @@
 cpp-be
 ===============
 
-Simple GNU Make based build environment for C++.
+Smart GNU Make based build environment for C++.
