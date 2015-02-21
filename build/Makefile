@@ -14,30 +14,18 @@ $(BUILD_LIBRARY): $(OBJECTS_EXCEPT_MAIN)
 $(BUILD_EXECUTABLE) DUMMY: $(BUILD_MAIN) $(BUILD_LIBRARY)
 	$(CXX) $(LDFLAGS) $(BUILD_MAIN) $(BUILD_LIBRARY) -o $@ $(LDLIBS)
 
-# when a dependency file already exists it is used to decide whether it is necessary
-# to recompile the object or not, when dependency file doesn't exist the recompilation
-# is forced because it may be necessary
-
-FUNCTION_TRY_LIST_DEPENDENCIES = \
-	$(shell if [ -r $(1) ]; then cat $(1); else echo FORCE; fi)
-
 .SECONDEXPANSION:
 
 $(OBJECTS): %.o: \
 $(PATH_TO_SRC_DIRECTORY)/%.$(SRC_SOURCE_SUFFIX) \
-$$(call FUNCTION_TRY_LIST_DEPENDENCIES,%.d)
+$$(call FUNCTION_SOLVE_DEPENDENCIES,%.d)
 
 	@ # ensure target path existence
 	mkdir -p $(@D)/
 
 	@ # create a dependency file
 	@ $(CXX) -MM $(CXXFLAGS) $(call FUNCTION_DROP_REDUNDANT_SLASHES,$<) | \
-		sed -n '1h;1!H;$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' | \
-		sed '/^$$/d;/\.$(SRC_SOURCE_SUFFIX)$$/d' > $*.d
+		$(call FUNCTION_GET_DEPENDENCY_FILE_FORMATTER,$(SRC_SOURCE_SUFFIX)) > $*.d
 
 	@ # and compile the object file
 	$(CXX) $(CXXFLAGS) $(call FUNCTION_DROP_REDUNDANT_SLASHES,$<) -o $*.o
-
-.PHONY: FORCE
-
-FORCE:
