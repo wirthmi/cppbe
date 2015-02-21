@@ -1,3 +1,5 @@
+test_*.d
 test_*.o
+catch.d
 catch.o
 catch
