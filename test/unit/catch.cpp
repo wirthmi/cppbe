@@ -9,7 +9,7 @@
  * @see http://builds.catch-lib.net/
  */
 
-// this macro tells the Catch to provide a main() function in here
+// this macro tells the Catch to provide the main() function in here
 #define CATCH_CONFIG_MAIN
 
 #include "catch.hpp"
