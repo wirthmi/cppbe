@@ -5,7 +5,11 @@ FUNCTION_GET_SUBSTRING = $(word $(3),$(subst $(2), ,$(1)))
 
 # usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
 FUNCTION_FIND_FILES = $(shell \
-	find '$(1)' -type f -regextype posix-extended -iregex '^([^/]*/)*$(2)$$' -printf '%P\n' \
+	find '$(1)' \
+		-type f \
+		-regextype posix-extended \
+		-iregex '^([^/]*/)*$(2)$$' \
+		-printf '%P\n' \
 )
 
 # usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)

@@ -1,0 +1,40 @@
+# see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
+
+.DEFAULT_GOAL = all
+
+SHELL = /bin/bash
+JOBS = $(shell nproc)
+
+
+# === SRC RELATED SECTION =========
+
+SRC_DIRECTORY = src/
+PATH_TO_SRC_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(SRC_DIRECTORY)
+
+SRC_HEADER_EXTENSIONS = hpp|tpp
+SRC_SOURCE_EXTENSION = cpp
+
+
+# === BUILD RELATED SECTION =========
+
+BUILD_DIRECTORY = build/
+PATH_TO_BUILD_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(BUILD_DIRECTORY)
+
+BUILD_DEPENDENCY_EXTENSION = d
+BUILD_OBJECT_EXTENSION = o
+
+BUILD_EXECUTABLES = project
+BUILD_LIBRARY = libproject.a
+
+
+# === RUNTIME RELATED SECTION =========
+
+CXX = g++
+#CXX = clang
+AR = ar
+ASTYLE = astyle
+DOXYGEN = doxygen
+
+CXXFLAGS = -c -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_SRC_DIRECTORY))
+LDFLAGS =
+LDLIBS =

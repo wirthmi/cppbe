@@ -1,8 +1,9 @@
-# see http://www.gnu.org/software/make/manual/make.html for Makefile syntax 
+# see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 include ../include.mk
 
 DOXYGEN_CONFIGURATION = doxygen.conf
+
 HTML_DIRECTORY = html/
 INDEX_FILE = index.html
 
