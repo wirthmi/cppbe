@@ -10,7 +10,6 @@ include $(PATH_TO_ROOT_DIRECTORY)/settings.mk
 include $(PATH_TO_ROOT_DIRECTORY)/variables.mk
 include $(PATH_TO_ROOT_DIRECTORY)/requirements.mk
 
-
 .PHONY: FORCE
 
 FORCE:
