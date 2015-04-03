@@ -1,18 +1,41 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-# favourite compilator selection
-#CXX = g++
+# === SRC DIRECTORY RELATED SECTION =========
 
-# building targets, with no executables defined only a library will be built
-#BUILD_EXECUTABLES =
-#BUILD_LIBRARY =
+# used extensions for header files (separated by vertical bars)
+#SRC_HEADER_EXTENSIONS = hpp|tpp
+
+# single extension used for source files
+#SRC_SOURCE_EXTENSION = cpp
+
+
+# === BUILD DIRECTORY RELATED SECTION =========
+
+# names of final executable binaries (separated by spaces), for each executable
+# there must be a source file with the same name (and appropriate extension)
+# containing a definition of the main() function, if no executables are given,
+# only a static library defined below in BUILD_LIBRARY will be built
+#BUILD_EXECUTABLES = project
+
+# name of final static library constructed from all object files except the
+# ones related to BUILD_EXECUTABLES mentioned above
+#BUILD_LIBRARY = libproject.a
+
+
+# === RUNTIME STUFF SECTION =========
+
+# various paths to compilator etc., usually they are all reachable from PATH
+#CXX = g++
+#AR = ar
+#ASTYLE = astyle
+#DOXYGEN = doxygen
 
 # user defined compilator and linker settings
 #CXXFLAGS += -Wall -O3 -std=c++11
 #CXXFLAGS += -g -DDEBUG_MODE_
 #CXXFLAGS += -DSILENT_MODE_
 
-# libopencv-dev
+# dependency on external library (e.g. from libopencv-dev)
 #CXXFLAGS += $(shell pkg-config --cflags opencv)
 #LDFLAGS += $(shell pkg-config --libs-only-L opencv)
 #LDLIBS += $(shell pkg-config --libs-only-l opencv)

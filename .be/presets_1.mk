@@ -1,12 +1,17 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-.DEFAULT_GOAL = all
+# === BASIC STUFF SECTION =========
 
 SHELL = /bin/bash
 JOBS = $(shell nproc)
 
+.DEFAULT_GOAL = all
 
-# === SRC RELATED SECTION =========
+BE_DIRECTORY = .be/
+PATH_TO_ROOT_DIRECTORY = $(PATH_TO_BE_DIRECTORY:$(BE_DIRECTORY)=)
+
+
+# === SRC DIRECTORY RELATED SECTION =========
 
 SRC_DIRECTORY = src/
 PATH_TO_SRC_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(SRC_DIRECTORY)
@@ -15,7 +20,7 @@ SRC_HEADER_EXTENSIONS = hpp|tpp
 SRC_SOURCE_EXTENSION = cpp
 
 
-# === BUILD RELATED SECTION =========
+# === BUILD DIRECTORY RELATED SECTION =========
 
 BUILD_DIRECTORY = build/
 PATH_TO_BUILD_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(BUILD_DIRECTORY)
@@ -27,7 +32,7 @@ BUILD_EXECUTABLES = project
 BUILD_LIBRARY = libproject.a
 
 
-# === RUNTIME RELATED SECTION =========
+# === RUNTIME STUFF SECTION =========
 
 CXX = g++
 #CXX = clang
