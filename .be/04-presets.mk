@@ -21,8 +21,11 @@
 # a lookup for header and source paths, notice that all of them will be
 # relative to the SRC_DIRECTORY and without the "./" prefix
 
-HEADERS = $(call FUNCTION_FIND_FILES,$(PATH_TO_SRC_DIRECTORY),.*\.($(SRC_HEADER_EXTENSIONS)))
-SOURCES = $(call FUNCTION_FIND_FILES,$(PATH_TO_SRC_DIRECTORY),.*\.$(SRC_SOURCE_EXTENSION))
+HEADERS = $(call FUNCTION_FIND_FILES, \
+	$(PATH_TO_SRC_DIRECTORY),.*\.($(SRC_HEADER_EXTENSIONS)))
+
+SOURCES = $(call FUNCTION_FIND_FILES, \
+	$(PATH_TO_SRC_DIRECTORY),.*\.$(SRC_SOURCE_EXTENSION))
 
 HEADERS_AND_SOURCES = $(HEADERS) $(SOURCES)
 
