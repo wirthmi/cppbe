@@ -2,9 +2,8 @@
 
 PATH_TO_BE_DIRECTORY = $(dir $(filter %init.mk,$(MAKEFILE_LIST)))
 
-include $(PATH_TO_BE_DIRECTORY)/functions.mk
-include $(PATH_TO_BE_DIRECTORY)/presets_1.mk
-include $(PATH_TO_BE_DIRECTORY)/config.mk
-include $(PATH_TO_BE_DIRECTORY)/presets_2.mk
+# load all internals of build enviroment in strictly defined order
+include $(wildcard $(PATH_TO_BE_DIRECTORY)/??-*.mk)
 
+# load some basic shared targets, nothing fancy
 include $(PATH_TO_TARGET_DIRECTORY)/global.mk
