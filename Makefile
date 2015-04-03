@@ -2,4 +2,4 @@
 
 include .be/init.mk
 
-include $(PATH_TO_SNIPPET_DIRECTORY)/recursion_targets.mk
+include $(PATH_TO_TARGET_DIRECTORY)/recursion.mk

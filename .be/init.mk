@@ -7,4 +7,4 @@ include $(PATH_TO_BE_DIRECTORY)/presets_1.mk
 include $(PATH_TO_BE_DIRECTORY)/config.mk
 include $(PATH_TO_BE_DIRECTORY)/presets_2.mk
 
-include $(PATH_TO_SNIPPET_DIRECTORY)/global_targets.mk
+include $(PATH_TO_TARGET_DIRECTORY)/global.mk
