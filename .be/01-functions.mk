@@ -47,6 +47,11 @@ FUNCTION_SOLVE_DEPENDENCIES = $(shell \
 
 # === CONCEPT OF SHARED TARGETS =========
 
+# there are two types of shared targets (i.e. reusable targets for several
+# Makefiles), first of all configurable targets which are defined here as
+# evaluable functions and secondly just-include targets that are kept as
+# separate files in the TARGET_DIRECTORY
+
 # usage:
 # $(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
 # 	executable_name_or_empty, \
