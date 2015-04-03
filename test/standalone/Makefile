@@ -1,6 +1,6 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../../include.mk
+include ../../.be/init.mk
 
 TEST_SOURCES = $(call FUNCTION_FIND_FILES,./,test_[a-z_]+\.$(SRC_SOURCE_EXTENSION))
 TEST_DEPENDENCIES = $(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_DEPENDENCY_EXTENSION))

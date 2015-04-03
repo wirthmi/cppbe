@@ -1,6 +1,6 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../include.mk
+include ../.be/init.mk
 
 all: $(BUILD_LIBRARY) $(BUILD_EXECUTABLES)
 
