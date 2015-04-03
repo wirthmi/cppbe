@@ -2,6 +2,8 @@
 
 include ../../.be/init.mk
 
+include $(PATH_TO_SNIPPET_DIRECTORY)/build_library_target.mk
+
 CATCH = catch
 
 CATCH_SOURCE = \
@@ -29,9 +31,6 @@ run: $(CATCH)
 
 $(CATCH): $(CATCH_OBJECT) $(TEST_OBJECTS) $(PATH_TO_BUILD_LIBRARY)
 	$(CXX) $(LDFLAGS) $^ -o $@ $(LDLIBS)
-
-$(PATH_TO_BUILD_LIBRARY): FORCE
-	$(MAKE) -C $(PATH_TO_BUILD_DIRECTORY) -j $(JOBS) $(BUILD_LIBRARY)
 
 .SECONDEXPANSION:
 
