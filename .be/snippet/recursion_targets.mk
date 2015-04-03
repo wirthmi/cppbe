@@ -2,8 +2,6 @@
 
 SUBMAKES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
 
-.SECONDEXPANSION:
-
 all clean: $(addprefix submake-,$(addsuffix -$$@,$(SUBMAKES)))
 
 $(SUBMAKES): submake-$$@-all
