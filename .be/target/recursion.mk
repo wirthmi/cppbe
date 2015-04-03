@@ -16,25 +16,13 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../.be/init.mk
+SUBMAKES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
 
-DOXYGEN_CONFIG = doxygen.conf
+all clean: $(addprefix submake-,$(addsuffix -$$@,$(SUBMAKES)))
 
-HTML_DIRECTORY = html/
-INDEX_FILE = index.html
+$(SUBMAKES): submake-$$@-all
 
-all: $(INDEX_FILE)
-
-clean:
-	rm -rf $(INDEX_FILE) $(HTML_DIRECTORY)
-	rm -f doxygen_*
-
-$(INDEX_FILE): $(HTML_DIRECTORY)
-	ln -sf $(HTML_DIRECTORY)/$@ $@
-
-$(HTML_DIRECTORY): \
-$(DOXYGEN_CONFIG) \
-$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(HEADERS_AND_SOURCES))
-
-	@ # launch documentation generator
-	$(DOXYGEN) $<
+submake-%: _SUBMAKE_NAME = $(call FUNCTION_GET_SUBSTRING,$*,-,1)
+submake-%: _SUBMAKE_TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
+submake-%:
+	$(MAKE) -C $(_SUBMAKE_NAME)/ -j $(JOBS) $(_SUBMAKE_TARGET)

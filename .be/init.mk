@@ -13,28 +13,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+    
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../.be/init.mk
+PATH_TO_BE_DIRECTORY = $(dir $(filter %init.mk,$(MAKEFILE_LIST)))
 
-DOXYGEN_CONFIG = doxygen.conf
+# load all internals of build enviroment in strictly defined order
+include $(wildcard $(PATH_TO_BE_DIRECTORY)/??-*.mk)
 
-HTML_DIRECTORY = html/
-INDEX_FILE = index.html
-
-all: $(INDEX_FILE)
-
-clean:
-	rm -rf $(INDEX_FILE) $(HTML_DIRECTORY)
-	rm -f doxygen_*
-
-$(INDEX_FILE): $(HTML_DIRECTORY)
-	ln -sf $(HTML_DIRECTORY)/$@ $@
-
-$(HTML_DIRECTORY): \
-$(DOXYGEN_CONFIG) \
-$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(HEADERS_AND_SOURCES))
-
-	@ # launch documentation generator
-	$(DOXYGEN) $<
+# load some basic shared targets, nothing fancy
+include $(PATH_TO_TARGET_DIRECTORY)/global.mk

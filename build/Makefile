@@ -1,31 +1,40 @@
+# Smart GNU Make based build environment for C++.
+# Copyright (C) 2015  Michal Wirth <wirthmi@rankl.cz>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../include.mk
+include ../.be/init.mk
 
-all: $(BUILD_LIBRARY) $(BUILD_EXECUTABLE)
+all: $(BUILD_EXECUTABLES) $(BUILD_LIBRARY)
 
 clean:
-	rm -f $(BUILD_EXECUTABLE) $(BUILD_LIBRARY) $(OBJECTS) $(DEPENDENCIES)
+	rm -f $(BUILD_EXECUTABLES) $(BUILD_LIBRARY) $(OBJECTS) $(DEPENDENCIES)
 	find ./ -depth -mindepth 1 -type d -delete
 
-$(BUILD_LIBRARY): $(OBJECTS_EXCEPT_MAIN)
-	$(AR) crvs $(BUILD_LIBRARY) $(OBJECTS_EXCEPT_MAIN)
+$(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
+	$(BUILD_EXECUTABLES), \
+	%.$(BUILD_OBJECT_EXTENSION) $(BUILD_LIBRARY) \
+))
 
-$(BUILD_EXECUTABLE) DUMMY: $(BUILD_MAIN) $(BUILD_LIBRARY)
-	$(CXX) $(LDFLAGS) $(BUILD_MAIN) $(BUILD_LIBRARY) -o $@ $(LDLIBS)
+$(eval $(call FUNCTION_GET_LIBRARY_BUILDING_TARGET, \
+	$(BUILD_LIBRARY), \
+	$(OBJECTS_EXCEPT_MAIN) \
+))
 
-.SECONDEXPANSION:
-
-$(OBJECTS): %.o: \
-$(PATH_TO_SRC_DIRECTORY)/%.$(SRC_SOURCE_SUFFIX) \
-$$(call FUNCTION_SOLVE_DEPENDENCIES,%.d)
-
-	@ # ensure target path existence
-	mkdir -p $(@D)/
-
-	@ # create a dependency file
-	@ $(CXX) -MM $(CXXFLAGS) $(call FUNCTION_DROP_REDUNDANT_SLASHES,$<) | \
-		$(call FUNCTION_GET_DEPENDENCY_FILE_FORMATTER,$(SRC_SOURCE_SUFFIX)) > $*.d
-
-	@ # and compile the object file
-	$(CXX) $(CXXFLAGS) $(call FUNCTION_DROP_REDUNDANT_SLASHES,$<) -o $*.o
+$(eval $(call FUNCTION_GET_OBJECTS_BUILDING_TARGET, \
+	$(OBJECTS), \
+	$(PATH_TO_SRC_DIRECTORY)/%.$(SRC_SOURCE_EXTENSION) \
+))

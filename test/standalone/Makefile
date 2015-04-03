@@ -1,32 +1,47 @@
+# Smart GNU Make based build environment for C++.
+# Copyright (C) 2015  Michal Wirth <wirthmi@rankl.cz>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../../include.mk
+include ../../.be/init.mk
 
-TEST_SOURCES = $(call FUNCTION_FIND_FILES,./,test_[a-z_]+\.$(SRC_SOURCE_SUFFIX))
-TEST_DEPENDENCIES = $(TEST_SOURCES:.$(SRC_SOURCE_SUFFIX)=.d)
-TEST_OBJECTS = $(TEST_SOURCES:.$(SRC_SOURCE_SUFFIX)=.o)
-TEST_EXECUTABLES = $(TEST_SOURCES:.$(SRC_SOURCE_SUFFIX)=)
+TEST_SOURCES = \
+	$(call FUNCTION_FIND_FILES,./,test_[a-z_]+\.$(SRC_SOURCE_EXTENSION))
+TEST_DEPENDENCIES = \
+	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_DEPENDENCY_EXTENSION))
+TEST_OBJECTS = \
+	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_OBJECT_EXTENSION))
+TEST_EXECUTABLES = \
+	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=)
 
 all: $(TEST_EXECUTABLES)
 
 clean:
 	rm -f $(TEST_EXECUTABLES) $(TEST_OBJECTS) $(TEST_DEPENDENCIES)
 
-$(TEST_EXECUTABLES): %: %.o $(PATH_TO_BUILD_LIBRARY)
-	$(CXX) $(LDFLAGS) $< $(PATH_TO_BUILD_LIBRARY) -o $@ $(LDLIBS)
+$(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
+	$(TEST_EXECUTABLES), \
+	%.$(BUILD_OBJECT_EXTENSION) $(PATH_TO_BUILD_LIBRARY) \
+))
 
-$(PATH_TO_BUILD_LIBRARY): FORCE
-	$(MAKE) -C $(PATH_TO_BUILD_DIRECTORY) -j $(JOBS) $(BUILD_LIBRARY)
+$(eval $(call FUNCTION_GET_OBJECTS_BUILDING_TARGET, \
+	$(TEST_OBJECTS), \
+	%.$(SRC_SOURCE_EXTENSION) \
+))
 
-.SECONDEXPANSION:
-
-$(TEST_OBJECTS): %.o: \
-%.$(SRC_SOURCE_SUFFIX) \
-$$(call FUNCTION_SOLVE_DEPENDENCIES,%.d)
-
-	@ # create a dependency file
-	@ $(CXX) -MM $(CXXFLAGS) $(call FUNCTION_DROP_REDUNDANT_SLASHES,$<) | \
-		$(call FUNCTION_GET_DEPENDENCY_FILE_FORMATTER,$(SRC_SOURCE_SUFFIX)) > $*.d
-
-	@ # and compile the object file
-	$(CXX) $(CXXFLAGS) $(call FUNCTION_DROP_REDUNDANT_SLASHES,$<) -o $*.o
+$(eval $(call FUNCTION_GET_FORCING_MAKE_TARGET, \
+	$(PATH_TO_BUILD_LIBRARY) \
+))
