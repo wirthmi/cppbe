@@ -9,10 +9,10 @@ clean:
 	find ./ -depth -mindepth 1 -type d -delete
 
 $(BUILD_EXECUTABLES) DUMMY: %: %.$(BUILD_OBJECT_EXTENSION) $(BUILD_LIBRARY)
-	$(CXX) $(LDFLAGS) $< $(BUILD_LIBRARY) -o $@ $(LDLIBS)
+	$(CXX) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 $(BUILD_LIBRARY): $(OBJECTS_EXCEPT_MAIN)
-	$(AR) crvs $@ $(OBJECTS_EXCEPT_MAIN)
+	$(AR) crvs $@ $^
 
 .SECONDEXPANSION:
 
