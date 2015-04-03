@@ -2,7 +2,7 @@
 
 include ../include.mk
 
-DOXYGEN_CONFIGURATION = doxygen.conf
+DOXYGEN_CONFIG = doxygen.conf
 
 HTML_DIRECTORY = html/
 INDEX_FILE = index.html
@@ -16,5 +16,9 @@ clean:
 $(INDEX_FILE): $(HTML_DIRECTORY)
 	ln -sf $(HTML_DIRECTORY)/$@ $@
 
-$(HTML_DIRECTORY): $(DOXYGEN_CONFIGURATION) $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(HEADERS_AND_SOURCES))
+$(HTML_DIRECTORY): \
+$(DOXYGEN_CONFIG) \
+$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(HEADERS_AND_SOURCES))
+
+	@ # launch documentation generator
 	$(DOXYGEN) $<
