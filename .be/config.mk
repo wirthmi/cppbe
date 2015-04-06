@@ -55,3 +55,20 @@
 
 # single extension used for source files
 #SRC_SOURCE_EXTENSION = cpp
+
+# definition of header and source files code style for astyle tool
+#SRC_ASTYLE_OPTIONS = \
+#	--style=java \
+#	--indent=spaces=2 \
+#	--attach-namespaces \
+#	--attach-classes \
+#	--indent-namespaces \
+#	--indent-switches \
+#	--pad-oper \
+#	--pad-paren-in \
+#	--pad-header \
+#	--align-pointer=middle \
+#	--align-reference=middle \
+#	--add-brackets \
+#	--close-templates \
+#	--suffix=none \

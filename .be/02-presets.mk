@@ -41,6 +41,22 @@ PATH_TO_SRC_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(SRC_DIRECTORY)
 SRC_HEADER_EXTENSIONS = hpp|tpp
 SRC_SOURCE_EXTENSION = cpp
 
+SRC_ASTYLE_OPTIONS = \
+	--style=java \
+	--indent=spaces=2 \
+	--attach-namespaces \
+	--attach-classes \
+	--indent-namespaces \
+	--indent-switches \
+	--pad-oper \
+	--pad-paren-in \
+	--pad-header \
+	--align-pointer=middle \
+	--align-reference=middle \
+	--add-brackets \
+	--close-templates \
+	--suffix=none \
+
 
 # === BUILD DIRECTORY RELATED SECTION =========
 
