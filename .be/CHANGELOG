@@ -1,0 +1,20 @@
+=== be-v0.2.0 (2015-04-06) =========
+
+- add support for building more than one executable in build/ directory
+
+- add shared targets concept effectively preventing duplicate code
+
+- refactor all code improving its readability and place all build environment
+  internals into the .be/ directory
+
+- all build environment settings is now commented and configurable at one
+  place in the .be/config.mk file
+
+- force project rebuild on any change of build environment settings
+
+- disable automatic launching of unit tests, now launching has to be requested
+
+
+=== be-v0.1.0 (2015-02-21) =========
+
+- first production ready release
