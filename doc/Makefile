@@ -34,7 +34,7 @@ $(INDEX_FILE): $(HTML_DIRECTORY)
 
 $(HTML_DIRECTORY): \
 $(DOXYGEN_CONFIG) \
-$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(HEADERS_AND_SOURCES))
+$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS_AND_SOURCES))
 
 	@ # launch documentation generator
 	$(DOXYGEN) $<

@@ -20,11 +20,11 @@ include ../.be/init.mk
 
 all clean:
 
-style: $(HEADERS_AND_SOURCES)
+style: $(SRC_HEADERS_AND_SOURCES)
 
-.PHONY: $(HEADERS_AND_SOURCES)
+.PHONY: $(SRC_HEADERS_AND_SOURCES)
 
-$(HEADERS_AND_SOURCES):
+$(SRC_HEADERS_AND_SOURCES):
 
 	@ # run astyle for single header or source file
 	@ $(ASTYLE) $(SRC_ASTYLE_OPTIONS) $@
