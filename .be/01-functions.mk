@@ -32,6 +32,26 @@ FUNCTION_FIND_FILES = $(shell \
 FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
 
 
+# === CONCEPT OF CLEAN RECORD FILES =========
+
+# they are append only and they help to keep track files produced by the
+# building process, when cleaning the environment all object files etc. could
+# be easily deleted even if corresponding source files has been already removed
+
+# usage: $(call FUNCTION_ADD_CLEAN_RECORD,file_path)
+FUNCTION_ADD_CLEAN_RECORD = $(shell \
+	if [ ! -e $(BUILD_CLEAN_RECORD_FILE) ]; then \
+		touch $(BUILD_CLEAN_RECORD_FILE); \
+	fi; \
+	echo $(1) \
+		|cat - $(BUILD_CLEAN_RECORD_FILE) \
+		|sort -u \
+		|tee $(BUILD_CLEAN_RECORD_FILE) \
+		> /dev/null; \
+	echo $(1) \
+)
+
+
 # === CONCEPT OF DEPENDENCY FILES =========
 
 # when a dependency file already exists while compiling the object, it should
@@ -60,7 +80,8 @@ FUNCTION_SOLVE_DEPENDENCIES = $(shell \
 define FUNCTION_GET_EXECUTABLES_BUILDING_TARGET
 
 $(1) DUMMY: %: $(2)
-	$(CXX) $(LDFLAGS) $$^ -o $$@ $(LDLIBS)
+	$(CXX) $(LDFLAGS) $$^ \
+		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@) $(LDLIBS)
 endef
 
 # usage:
@@ -71,7 +92,7 @@ endef
 define FUNCTION_GET_LIBRARY_BUILDING_TARGET
 
 $(1): %: $(2)
-	$(AR) crvs $$@ $$^
+	$(AR) crvs $$(call FUNCTION_ADD_CLEAN_RECORD,$$@) $$^
 endef
 
 # usage:
@@ -93,10 +114,11 @@ $(PATH_TO_CONFIG_FILE)
 	@ $(CXX) -MM $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
 		| sed -n '1h;1!H;$$$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' \
 		| sed '/^$$$$/d;/\.$(SRC_SOURCE_EXTENSION)$$$$/d' \
-		> $$*.$(BUILD_DEPENDENCY_EXTENSION)
+		> $$(call FUNCTION_ADD_CLEAN_RECORD,$$*.$(BUILD_DEPENDENCY_EXTENSION))
 
 	@ # and compile the object file
-	$(CXX) $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) -o $$@
+	$(CXX) $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
+		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@)
 endef
 
 # usage:
