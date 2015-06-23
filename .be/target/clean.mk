@@ -16,29 +16,12 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../../.be/init.mk
+clean:
+	@ # try to delete files according to clean record file
+	if [ -r $(BUILD_CLEAN_RECORD_FILE) ]; then \
+		xargs -a $(BUILD_CLEAN_RECORD_FILE) rm -f; \
+		rm $(BUILD_CLEAN_RECORD_FILE); \
+	fi
 
-include $(PATH_TO_TARGET_DIRECTORY)/clean.mk
-
-TEST_SOURCES = \
-	$(call FUNCTION_FIND_FILES,./,test_[a-z_]+\.$(SRC_SOURCE_EXTENSION))
-TEST_OBJECTS = \
-	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_OBJECT_EXTENSION))
-TEST_EXECUTABLES = \
-	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=)
-
-all: $(TEST_EXECUTABLES)
-
-$(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
-	$(TEST_EXECUTABLES), \
-	%.$(BUILD_OBJECT_EXTENSION) $(PATH_TO_BUILD_LIBRARY) \
-))
-
-$(eval $(call FUNCTION_GET_OBJECTS_BUILDING_TARGET, \
-	$(TEST_OBJECTS), \
-	%.$(SRC_SOURCE_EXTENSION) \
-))
-
-$(eval $(call FUNCTION_GET_FORCING_MAKE_TARGET, \
-	$(PATH_TO_BUILD_LIBRARY) \
-))
+	@ # and always delete all empty subdirectories
+	find ./ -depth -type d -empty -exec rmdir {} \;

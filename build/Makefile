@@ -18,11 +18,9 @@
 
 include ../.be/init.mk
 
-all: $(BUILD_EXECUTABLES) $(BUILD_LIBRARY)
+include $(PATH_TO_TARGET_DIRECTORY)/clean.mk
 
-clean:
-	rm -f $(BUILD_EXECUTABLES) $(BUILD_LIBRARY) $(OBJECTS) $(DEPENDENCIES)
-	find ./ -depth -mindepth 1 -type d -delete
+all: $(BUILD_EXECUTABLES) $(BUILD_LIBRARY)
 
 $(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
 	$(BUILD_EXECUTABLES), \
