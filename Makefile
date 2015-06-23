@@ -19,3 +19,6 @@
 include .be/init.mk
 
 include $(PATH_TO_TARGET_DIRECTORY)/recursion.mk
+
+config: FORCE
+	$(EDITOR) $(PATH_TO_CONFIG_FILE)

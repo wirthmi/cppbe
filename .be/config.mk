@@ -23,6 +23,7 @@
 #AR = ar
 #ASTYLE = astyle
 #DOXYGEN = doxygen
+#VIM = vim
 
 # user defined compilator and linker settings
 #CXXFLAGS += -Wall -O3 -std=c++11

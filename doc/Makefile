@@ -25,7 +25,7 @@ INDEX_FILE = index.html
 
 all: $(INDEX_FILE)
 
-clean:
+clean: FORCE
 	rm -rf $(INDEX_FILE) $(HTML_DIRECTORY)
 	rm -f doxygen_*
 
@@ -34,7 +34,7 @@ $(INDEX_FILE): $(HTML_DIRECTORY)
 
 $(HTML_DIRECTORY): \
 $(DOXYGEN_CONFIG) \
-$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(HEADERS_AND_SOURCES))
+$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS_AND_SOURCES))
 
 	@ # launch documentation generator
 	$(DOXYGEN) $<
