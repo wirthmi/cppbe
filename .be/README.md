@@ -5,7 +5,7 @@ Smart GNU Make based build environment for C++.
 
 ### Features
 
-  * It **works out of the box** without any need of complex configuration.
+  * It **works out of the box** without any need of complex initial configuration.
 
   * Project's **header and source files are automatically hooked up** into the
   building process. No user's interaction is required.
@@ -34,7 +34,7 @@ Smart GNU Make based build environment for C++.
 ### Requirements
 
 For a maximum functionality of the build environment you will need the
-following software.
+following software (sorted by their importance).
 
   * [GNU core utilities](http://www.gnu.org/software/coreutils/)
   (make, cat, sed, find, nproc etc.)
@@ -47,29 +47,45 @@ following software.
   * [Doxygen](http://www.doxygen.org/) with
   [Graphviz](http://www.graphviz.org/) toolkit
 
+  * [Vim](http://www.vim.org/) editor
+
 
 ### Usage
 
 At first you may need to make some configuration changes of the build
-environment in the `.be/config.mk` file. Commented values are defaults.
-Everything is nicely explained.
+environment. You can do it by running `make config` which opens your preferred
+text editor (see `echo $VISUAL` or `echo $EDITOR`) or
+[Vim](http://www.vim.org/) if you don't have any preferred one. Same thing can
+be achieved by direct editation of the `.be/config.mk` file. All commented
+values are defaults.
 
-After that you can add all your header and source files into the `src/`
-directory. They will be hooked up automatically.
+After that you can start adding your header and source files into the `src/`
+directory. They will be hooked up into the building process automatically.
 
-For launching the building (or rebuilding) process run simply a `make build`
-command. After that all created binaries will be placed into the `build/`
-directory.
+For launching the building (or rebuilding) process run simply a `make build` or
+`cd build/; make` command. After that all created binaries will be placed
+within the `build/` directory.
 
-Command `make doc` will create a generated documentation into the `doc/`
-directory.
+Command `make doc` or `cd doc/; make` will create a generated documentation via
+[Doxygen](http://www.doxygen.org/) into the `doc/` directory.
 
-For styling your header and source files according to your code style config
-run command `make style` inside the `src/` directory.
+Run command `cd src/; make style` for styling your header and source files
+using the [Artistic Style](http://astyle.sourceforge.net/) according to your
+code style configuration.
 
 All your tests should be placed within one of the `test/` subdirectories and
-named with `test_` prefix. Each of stand-alone tests must implement own
+named with `test_` prefix. Each of standalone tests must implement own
 `main()` function and you have to run them on your own because they are not
 intended to have some common interface. On the other hand unit tests should
-be launched all at once via `make run` command inside the `test/unit/`
-directory.
+be launched all at once via `cd test/unit/; make run` command.
+
+
+### Known Issues
+
+  * The build environment currently doesn't support source files using
+  white-space characters in their names. This is my personal decision but may
+  be it will be handled properly in the future. Currently I consider such kind
+  of names as a bad habit and IMHO they go against any good coding standard.
+  Handling these names properly would result into less readable code of the
+  build environment itself and readability is more important for me in this
+  case.

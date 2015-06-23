@@ -1,4 +1,12 @@
-=== be-v0.2.0 (2015-04-06) =========
+=== v0.3.0 (2015-06-23) =========
+
+- add special config target to easily modify build environment settings
+
+- add concept of clean record files that help to track built files even if the
+  corresponding sources files has been already removed
+
+
+=== v0.2.0 (2015-04-06) =========
 
 - add support for building more than one executable in build/ directory
 
@@ -15,6 +23,11 @@
 - disable automatic launching of unit tests, now launching has to be requested
 
 
-=== be-v0.1.0 (2015-02-21) =========
+=== v0.1.0 (2015-02-21) =========
 
 - first production ready release
+
+
+=== v0.0.0 (2015-01-19) =========
+
+- first operational but not production ready release

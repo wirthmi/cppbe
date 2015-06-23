@@ -16,7 +16,8 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-clean:
+clean: FORCE
+
 	@ # try to delete files according to clean record file
 	if [ -r $(BUILD_CLEAN_RECORD_FILE) ]; then \
 		xargs -a $(BUILD_CLEAN_RECORD_FILE) rm -f; \

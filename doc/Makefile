@@ -25,7 +25,7 @@ INDEX_FILE = index.html
 
 all: $(INDEX_FILE)
 
-clean:
+clean: FORCE
 	rm -rf $(INDEX_FILE) $(HTML_DIRECTORY)
 	rm -f doxygen_*
 

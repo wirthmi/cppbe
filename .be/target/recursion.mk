@@ -24,5 +24,7 @@ $(SUBMAKES): submake-$$@-all
 
 submake-%: _SUBMAKE_NAME = $(call FUNCTION_GET_SUBSTRING,$*,-,1)
 submake-%: _SUBMAKE_TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
-submake-%:
+submake-%: FORCE
+
+	@ # traverse with make into subdirectories
 	$(MAKE) -C $(_SUBMAKE_NAME)/ -j $(JOBS) $(_SUBMAKE_TARGET)
