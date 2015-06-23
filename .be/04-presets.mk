@@ -16,6 +16,11 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
+# === BASIC STUFF SECTION =========
+
+EDITOR = $(shell echo $${VISUAL} $${EDITOR} $(VIM) |sed 's/\s\s*.*$$//')
+
+
 # === SRC DIRECTORY RELATED SECTION =========
 
 # a lookup for header and source paths, notice that all of them will be
