@@ -79,6 +79,7 @@ CXX = g++
 AR = ar
 ASTYLE = astyle
 DOXYGEN = doxygen
+VIM = vim
 
 CXXFLAGS = -c -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_SRC_DIRECTORY))
 LDFLAGS =
