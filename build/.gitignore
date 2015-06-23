@@ -1,3 +1,4 @@
+.beclean
 *.d
 *.o
 *.a
