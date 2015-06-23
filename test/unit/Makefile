@@ -34,7 +34,7 @@ TEST_OBJECTS = \
 
 all: $(CATCH)
 
-run: $(CATCH)
+run: $(CATCH) FORCE
 	./$< --durations yes
 
 $(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
