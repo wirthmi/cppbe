@@ -18,7 +18,7 @@
 
 # === BASIC STUFF SECTION =========
 
-EDITOR = $(shell echo $${VISUAL} $${EDITOR} $(VIM) |sed 's/\s\s*.*$$//')
+EDITOR = $(shell echo $${VISUAL} $${EDITOR} $(VIM) |sed 's/\s.*$$//')
 
 
 # === SRC DIRECTORY RELATED SECTION =========
