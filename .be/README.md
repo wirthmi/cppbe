@@ -1,5 +1,5 @@
-cpp-be
-======
+cppbe
+=====
 
 Smart GNU Make based build environment for C++.
 
