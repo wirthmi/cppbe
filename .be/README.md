@@ -80,6 +80,45 @@ intended to have some common interface. On the other hand unit tests should
 be launched all at once via `cd test/unit/; make run` command.
 
 
+###### Create Repository Example
+
+Using the following set of commands you can create a new GitHub repository
+for your project and integrate the build environment into it. The advantage
+is that the build environment itself is easily updatable from upstream.
+Actually this is the way I use it.
+
+```shell
+# create a GitHub repository with some README.md
+firefox https://github.com/new
+
+# clone created repository and add cppbe remote (or use HTTPS variants)
+git clone git@github.com:wirthmi/project.git
+git remote add cppbe git@github.com:wirthmi/cppbe.git
+git remote set-url --push cppbe no_push_url
+
+# this one fetches latest stable build environment, use this also for fetching
+# new versions later, before commit some conflicts may have to be resolved
+git fetch cppbe --no-tags
+git merge --squash cppbe/master
+git commit -m "get latest build environment"
+
+# edit build environment configuration
+vim .be/config.mk
+git commit -m "change build environment config" .be/config.mk
+
+# name project in Doxygen configuration
+vim doc/doxygen.conf
+git commit -m "change doxygen config" doc/doxygen.conf
+
+# push the master branch
+git push
+
+# create and push a develop branch
+git checkout -b develop
+git push --set-upstream origin develop
+```
+
+
 ### Known Issues
 
   * The build environment currently doesn't support source files using
