@@ -38,16 +38,38 @@ FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
 # building process, when cleaning the environment all object files etc. could
 # be easily deleted even if corresponding source files has been already removed
 
+# the following complex function probably desires some detail explanation,
+# the if statement simply ensures clean record file's existence, after that a
+# new subshell with a special file locking trick is being executed, the first
+# exec shell built-in call forces the current subshell to open the clean record
+# file and the resulted file descriptor is named by a special bashism to a name
+# that has been previously freed by unset, after that an exclusive (write) file
+# lock is requested which guarantees that the clean record file won't be edited
+# by anybody else, the final exec call just closes bound file descriptor, the
+# after subshell echo just prints out the unchanged input which is what this
+# function should do, for more read about described locking trick the following
+# site could be useful http://unix.stackexchange.com/a/184271 and something
+# about exec built-in is at http://wiki.bash-hackers.org/commands/builtin/exec
+
 # usage: $(call FUNCTION_ADD_CLEAN_RECORD,file_path)
 FUNCTION_ADD_CLEAN_RECORD = $(shell \
 	if [ ! -e $(BUILD_CLEAN_RECORD_FILE) ]; then \
 		touch $(BUILD_CLEAN_RECORD_FILE); \
 	fi; \
-	echo $(1) \
-		|cat - $(BUILD_CLEAN_RECORD_FILE) \
-		|sort -u \
-		|tee $(BUILD_CLEAN_RECORD_FILE) \
-		> /dev/null; \
+	( \
+		unset named_file_descriptor; \
+		exec {named_file_descriptor}< $(BUILD_CLEAN_RECORD_FILE); \
+		\
+		flock -e $${named_file_descriptor}; \
+		\
+		echo $(1) \
+			|cat - $(BUILD_CLEAN_RECORD_FILE) \
+			|sort -u \
+			|tee $(BUILD_CLEAN_RECORD_FILE) \
+			> /dev/null; \
+		\
+		exec {named_file_descriptor}<&-; \
+	); \
 	echo $(1) \
 )
 
