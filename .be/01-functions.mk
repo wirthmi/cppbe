@@ -74,7 +74,7 @@ FUNCTION_SOLVE_DEPENDENCIES = $(shell \
 
 # usage:
 # $(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
-# 	executable_name_or_empty, \
+# 	executable_names_or_empty, \
 # 	library_or_object_file_paths_allowing_stem \
 # ))
 define FUNCTION_GET_EXECUTABLES_BUILDING_TARGET
@@ -122,10 +122,10 @@ $(PATH_TO_CONFIG_FILE)
 endef
 
 # usage:
-# $(eval $(call FUNCTION_GET_FORCING_MAKE_TARGET, \
-# 	directory_path/target_name_ie_some_file \
+# $(eval $(call FUNCTION_GET_FORCING_SUBMAKES_TARGET, \
+# 	list_of_directory_path/target_name_eg_some_file \
 # ))
-define FUNCTION_GET_FORCING_MAKE_TARGET
+define FUNCTION_GET_FORCING_SUBMAKES_TARGET
 
 $(1): FORCE
 	$(MAKE) -C $$(dir $$@) -j $(JOBS) $$(notdir $$@)
