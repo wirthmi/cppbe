@@ -29,7 +29,7 @@ FUNCTION_FIND_FILES = $(shell \
 )
 
 # usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
-FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
+FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) | sed 's/\/\/*/\//g')
 
 
 # === CONCEPT OF CLEAN RECORD FILES =========
@@ -38,18 +38,35 @@ FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
 # building process, when cleaning the environment all object files etc. could
 # be easily deleted even if corresponding source files has been already removed
 
-# usage: $(call FUNCTION_ADD_CLEAN_RECORD,file_path)
+# usage: $(call FUNCTION_ADD_CLEAN_RECORD,any_file_paths)
 FUNCTION_ADD_CLEAN_RECORD = $(shell \
-	if [ ! -e $(BUILD_CLEAN_RECORD_FILE) ]; then \
-		touch $(BUILD_CLEAN_RECORD_FILE); \
-	fi; \
-	echo $(1) \
-		|cat - $(BUILD_CLEAN_RECORD_FILE) \
-		|sort -u \
-		|tee $(BUILD_CLEAN_RECORD_FILE) \
-		> /dev/null; \
-	echo $(1) \
+	echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER) \
 )
+
+# usage: $(call FUNCTION_GET_CLEAN_RECORD_ADDER)
+define FUNCTION_GET_CLEAN_RECORD_ADDER
+
+awk '
+BEGIN {
+	while ( ( getline record < "$(BUILD_CLEAN_RECORD_FILE)" ) > 0 ) {
+		records[record] = 0;
+	}
+}
+{
+	for ( i = 1; i <= NF; ++i ) {
+		records[$$i] = 1;
+	}
+}
+END {
+	for ( record in records ) {
+		print record > "$(BUILD_CLEAN_RECORD_FILE)";
+		if ( records[record] == 1 ) {
+			print record;
+		}
+	}
+}
+'
+endef
 
 
 # === CONCEPT OF DEPENDENCY FILES =========
