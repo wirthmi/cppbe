@@ -18,7 +18,7 @@
 
 # === BASIC STUFF SECTION =========
 
-EDITOR = $(shell echo $${VISUAL} $${EDITOR} $(VIM) |sed 's/\s\s*.*$$//')
+EDITOR = $(shell echo $${VISUAL} $${EDITOR} $(VIM) | sed 's/\s.*$$//')
 
 
 # === SRC DIRECTORY RELATED SECTION =========
@@ -34,10 +34,18 @@ SRC_SOURCES = $(call FUNCTION_FIND_FILES, \
 
 SRC_HEADERS_AND_SOURCES = $(SRC_HEADERS) $(SRC_SOURCES)
 
+# construct full header and source paths that can be used from anywhere
+
+PATHS_TO_SRC_HEADERS = \
+	$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS))
+PATHS_TO_SRC_SOURCES = \
+	$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_SOURCES))
+
+PATHS_TO_SRC_HEADERS_AND_SOURCES = \
+	$(PATHS_TO_SRC_HEADERS) $(PATHS_TO_SRC_SOURCES)
+
 
 # === BUILD DIRECTORY RELATED SECTION =========
-
-PATH_TO_BUILD_LIBRARY = $(PATH_TO_BUILD_DIRECTORY)/$(BUILD_LIBRARY)
 
 # derivation of object paths of various types, similarly they are also
 # relative to the BUILD_DIRECTORY and again without the "./" prefix
@@ -48,3 +56,14 @@ BUILD_OBJECTS_ONLY_MAIN = \
 	$(addsuffix .$(BUILD_OBJECT_EXTENSION),$(BUILD_EXECUTABLES))
 BUILD_OBJECTS_EXCEPT_MAIN = \
 	$(filter-out $(BUILD_OBJECTS_ONLY_MAIN),$(BUILD_OBJECTS))
+
+# construct full executable and library paths that can be used from anywhere
+
+PATHS_TO_BUILD_EXECUTABLES = \
+	$(addprefix $(PATH_TO_BUILD_DIRECTORY)/,$(BUILD_EXECUTABLES))
+
+PATH_TO_FIRST_EXECUTABLE = $(word 1,$(PATHS_TO_BUILD_EXECUTABLES))
+PATH_TO_SECOND_EXECUTABLE = $(word 2,$(PATHS_TO_BUILD_EXECUTABLES))
+PATH_TO_THIRD_EXECUTABLE = $(word 3,$(PATHS_TO_BUILD_EXECUTABLES))
+
+PATH_TO_BUILD_LIBRARY = $(PATH_TO_BUILD_DIRECTORY)/$(BUILD_LIBRARY)

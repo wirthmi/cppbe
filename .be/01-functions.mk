@@ -19,17 +19,21 @@
 # usage: $(call FUNCTION_GET_SUBSTRING,string,separator,substring_index)
 FUNCTION_GET_SUBSTRING = $(word $(3),$(subst $(2), ,$(1)))
 
-# usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
-FUNCTION_FIND_FILES = $(shell \
-	find $(1) \
-		-type f \
-		-regextype posix-extended \
-		-iregex '^([^/]*/)*$(2)$$' \
-		-printf '%P\n' \
-)
-
 # usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
-FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
+FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) | sed 's/\/\/*/\//g')
+
+# usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
+FUNCTION_FIND_FILES = $(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
+
+# usage: $(call FUNCTION_GET_FILES_FINDER,directory,filename_regex)
+define FUNCTION_GET_FILES_FINDER
+\
+find $(1) \
+	-type f \
+	-regextype posix-extended \
+	-iregex '^([^/]*/)*$(2)$$' \
+	-printf '%P\n'
+endef
 
 
 # === CONCEPT OF CLEAN RECORD FILES =========
@@ -38,18 +42,36 @@ FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
 # building process, when cleaning the environment all object files etc. could
 # be easily deleted even if corresponding source files has been already removed
 
-# usage: $(call FUNCTION_ADD_CLEAN_RECORD,file_path)
+# usage: $(call FUNCTION_ADD_CLEAN_RECORD,any_file_paths)
 FUNCTION_ADD_CLEAN_RECORD = $(shell \
-	if [ ! -e $(BUILD_CLEAN_RECORD_FILE) ]; then \
-		touch $(BUILD_CLEAN_RECORD_FILE); \
-	fi; \
-	echo $(1) \
-		|cat - $(BUILD_CLEAN_RECORD_FILE) \
-		|sort -u \
-		|tee $(BUILD_CLEAN_RECORD_FILE) \
-		> /dev/null; \
-	echo $(1) \
+	echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER) \
 )
+
+# usage: $(call FUNCTION_GET_CLEAN_RECORD_ADDER)
+define FUNCTION_GET_CLEAN_RECORD_ADDER
+\
+$(strip awk '
+	BEGIN {
+		clean_record_file = "$(BUILD_CLEAN_RECORD_FILE)";
+		while ( ( getline record < clean_record_file ) > 0 ) {
+			records[record] = 0;
+		}
+	}
+	{
+		for ( i = 1; i <= NF; ++i ) {
+			records[$$i] = 1;
+		}
+	}
+	END {
+		for ( record in records ) {
+			print record > clean_record_file;
+			if ( records[record] == 1 ) {
+				print record;
+			}
+		}
+	}
+')
+endef
 
 
 # === CONCEPT OF DEPENDENCY FILES =========
@@ -74,7 +96,7 @@ FUNCTION_SOLVE_DEPENDENCIES = $(shell \
 
 # usage:
 # $(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
-# 	executable_name_or_empty, \
+# 	executable_names_or_empty, \
 # 	library_or_object_file_paths_allowing_stem \
 # ))
 define FUNCTION_GET_EXECUTABLES_BUILDING_TARGET
@@ -122,10 +144,10 @@ $(PATH_TO_CONFIG_FILE)
 endef
 
 # usage:
-# $(eval $(call FUNCTION_GET_FORCING_MAKE_TARGET, \
-# 	directory_path/target_name_ie_some_file \
+# $(eval $(call FUNCTION_GET_FORCING_SUBMAKES_TARGET, \
+# 	list_of_directory_path/target_name_eg_some_file \
 # ))
-define FUNCTION_GET_FORCING_MAKE_TARGET
+define FUNCTION_GET_FORCING_SUBMAKES_TARGET
 
 $(1): FORCE
 	$(MAKE) -C $$(dir $$@) -j $(JOBS) $$(notdir $$@)

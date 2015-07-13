@@ -37,7 +37,7 @@ For a maximum functionality of the build environment you will need the
 following software (sorted by their importance).
 
   * [GNU core utilities](http://www.gnu.org/software/coreutils/)
-  (make, cat, sed, find, nproc etc.)
+  (make, cat, sed, awk, find, nproc etc.)
 
   * [GCC](http://gcc.gnu.org/) or [Clang](http://clang.llvm.org/)
   C++ compiler

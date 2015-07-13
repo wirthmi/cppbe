@@ -1,3 +1,18 @@
+=== v0.3.1 (2015-07-13) =========
+
+- fix adding clean records, it is now possible to add multiple clean records
+  at once and everything should be safe, so clean records shouldn't get lost
+  as it sometimes happened
+
+- add possibility to add clean records also from recipes, migrate doc/ Makefile
+  to use this new feature
+
+- add new variables with some full paths to headers, sources, executables and
+  libraries to ease binding any 3rd party functionality to them
+
+- improve build environment documentation
+
+
 === v0.3.0 (2015-06-23) =========
 
 - add special config target to easily modify build environment settings
