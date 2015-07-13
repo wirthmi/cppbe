@@ -19,6 +19,9 @@
 # usage: $(call FUNCTION_GET_SUBSTRING,string,separator,substring_index)
 FUNCTION_GET_SUBSTRING = $(word $(3),$(subst $(2), ,$(1)))
 
+# usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
+FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) | sed 's/\/\/*/\//g')
+
 # usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
 FUNCTION_FIND_FILES = $(shell \
 	find $(1) \
@@ -27,9 +30,6 @@ FUNCTION_FIND_FILES = $(shell \
 		-iregex '^([^/]*/)*$(2)$$' \
 		-printf '%P\n' \
 )
-
-# usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
-FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) | sed 's/\/\/*/\//g')
 
 
 # === CONCEPT OF CLEAN RECORD FILES =========
