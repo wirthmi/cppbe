@@ -18,6 +18,8 @@
 
 include ../.be/init.mk
 
+include $(PATH_TO_TARGET_DIRECTORY)/clean.mk
+
 DOXYGEN_CONFIG = doxygen.conf
 
 HTML_DIRECTORY = html/
@@ -25,12 +27,21 @@ INDEX_FILE = index.html
 
 all: $(INDEX_FILE)
 
-clean: FORCE
-	rm -rf $(INDEX_FILE) $(HTML_DIRECTORY)
-	rm -f doxygen_*
-
 $(INDEX_FILE): $(HTML_DIRECTORY)
-	ln -sf $(HTML_DIRECTORY)/$@ $@
+	ln -sf $</$@ $(call FUNCTION_ADD_CLEAN_RECORD,$@)
 
 $(HTML_DIRECTORY): $(DOXYGEN_CONFIG) $(PATHS_TO_SRC_HEADERS_AND_SOURCES)
+
+	@ # launch documentation generator, it produces a lot of stuff
 	$(DOXYGEN) $<
+
+	@ # that will be here ...
+	@ $(call FUNCTION_GET_FILES_FINDER,./,doxygen_.*) \
+		| $(call FUNCTION_GET_CLEAN_RECORD_ADDER) \
+		> /dev/null
+
+	@ # and here registered as clean records and therefore later cleaned
+	@ $(call FUNCTION_GET_FILES_FINDER,$(HTML_DIRECTORY),.*) \
+		| sed 's#^#$(HTML_DIRECTORY)/#' \
+		| $(call FUNCTION_GET_CLEAN_RECORD_ADDER) \
+		> /dev/null

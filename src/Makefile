@@ -23,4 +23,6 @@ all clean:
 style: $(SRC_HEADERS_AND_SOURCES)
 
 $(SRC_HEADERS_AND_SOURCES): FORCE
+
+	@ # it's better to run astyle each time for single file
 	@ $(ASTYLE) $(SRC_ASTYLE_OPTIONS) $@
