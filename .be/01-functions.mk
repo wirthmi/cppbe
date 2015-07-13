@@ -51,7 +51,7 @@ FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) |sed 's/\/\/*/\//g')
 # site could be useful http://unix.stackexchange.com/a/184271 and something
 # about exec built-in is at http://wiki.bash-hackers.org/commands/builtin/exec
 
-# usage: $(call FUNCTION_ADD_CLEAN_RECORD,any_file_paths)
+# usage: $(call FUNCTION_ADD_CLEAN_RECORD,file_path)
 FUNCTION_ADD_CLEAN_RECORD = $(shell \
 	if [ ! -e $(BUILD_CLEAN_RECORD_FILE) ]; then \
 		touch $(BUILD_CLEAN_RECORD_FILE); \
@@ -63,7 +63,6 @@ FUNCTION_ADD_CLEAN_RECORD = $(shell \
 		flock -e $${named_file_descriptor}; \
 		\
 		echo $(1) \
-			|sed 's/\s\s*/\n/g' \
 			|cat - $(BUILD_CLEAN_RECORD_FILE) \
 			|sort -u \
 			|tee $(BUILD_CLEAN_RECORD_FILE) \
