@@ -75,7 +75,7 @@ BUILD_LIBRARY = libproject.a
 # === RUNTIME STUFF SECTION =========
 
 CXX = g++
-#CXX = clang
+#CXX = clang++
 AR = ar
 ASTYLE = astyle
 DOXYGEN = doxygen
