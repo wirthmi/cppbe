@@ -2,7 +2,7 @@
 
 - add new variable containing path to lib/ directory for easy definition of
   such 3rd party dependencies
-  
+
 - make doxygen to ignore symbols in "detail" namespace or symbols, usually
   macros, containing string "_DETAIL_" in their names
 
