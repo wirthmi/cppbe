@@ -72,10 +72,16 @@ BUILD_EXECUTABLES = project
 BUILD_LIBRARY = libproject.a
 
 
+# === LIB DIRECTORY RELATED SECTION =========
+
+LIB_DIRECTORY = lib/
+PATH_TO_LIB_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(LIB_DIRECTORY)
+
+
 # === RUNTIME STUFF SECTION =========
 
 CXX = g++
-#CXX = clang
+#CXX = clang++
 AR = ar
 ASTYLE = astyle
 DOXYGEN = doxygen
