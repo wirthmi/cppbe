@@ -20,7 +20,7 @@ clean: FORCE
 
 	@ # try to delete files according to clean record file
 	if [ -r $(BUILD_CLEAN_RECORD_FILE) ]; then \
-		xargs -a $(BUILD_CLEAN_RECORD_FILE) rm -f; \
+		xargs -a $(BUILD_CLEAN_RECORD_FILE) -d '\n' rm -f; \
 		rm $(BUILD_CLEAN_RECORD_FILE); \
 	fi
 
