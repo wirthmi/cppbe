@@ -17,13 +17,22 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 # usage: $(call FUNCTION_GET_SUBSTRING,string,separator,substring_index)
-FUNCTION_GET_SUBSTRING = $(word $(3),$(subst $(2), ,$(1)))
+define FUNCTION_GET_SUBSTRING
+\
+$(word $(3),$(subst $(2), ,$(1)))
+endef
 
 # usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
-FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) | sed 's/\/\/*/\//g')
+define FUNCTION_DROP_REDUNDANT_SLASHES
+\
+$(shell echo $(1) | sed 's/\/\/*/\//g')
+endef
 
 # usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
-FUNCTION_FIND_FILES = $(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
+define FUNCTION_FIND_FILES
+\
+$(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
+endef
 
 # usage: $(call FUNCTION_GET_FILES_FINDER,directory,filename_regex)
 define FUNCTION_GET_FILES_FINDER
@@ -52,9 +61,10 @@ endef
 # be easily deleted even if corresponding source files has been already removed
 
 # usage: $(call FUNCTION_ADD_CLEAN_RECORD,any_file_paths)
-FUNCTION_ADD_CLEAN_RECORD = $(shell \
-	echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER) \
-)
+define FUNCTION_ADD_CLEAN_RECORD
+\
+$(shell echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER))
+endef
 
 # usage: $(call FUNCTION_GET_CLEAN_RECORD_ADDER)
 define FUNCTION_GET_CLEAN_RECORD_ADDER
