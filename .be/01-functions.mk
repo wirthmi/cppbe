@@ -45,7 +45,7 @@ find $(1) \
 endef
 
 # usage: $(call FUNCTION_GET_EXTENDED_CXXFLAGS,source_file_path)
-define FUNCTION_GET_EXTENDED_CXXFLAGS =
+define FUNCTION_GET_EXTENDED_CXXFLAGS
 \
 $(shell
 	echo -n $(CXXFLAGS);
