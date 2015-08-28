@@ -91,9 +91,20 @@ endef
 # be necessary to do it, see FUNCTION_GET_OBJECTS_BUILDING_TARGET
 
 # usage: $(call FUNCTION_SOLVE_DEPENDENCIES,dependency_file_path)
-FUNCTION_SOLVE_DEPENDENCIES = $(shell \
-	if [ -r $(1) ]; then cat $(1); else echo FORCE; fi \
+define FUNCTION_SOLVE_DEPENDENCIES
+\
+$(shell
+	if [ ! -r $(1) ]; then
+		echo FORCE;
+	else
+		while read -r dependency; do
+			if [ -r $${dependency} ]; then
+				echo $${dependency};
+			fi;
+		done < $(1);
+	fi
 )
+endef
 
 
 # === CONCEPT OF SHARED TARGETS =========
