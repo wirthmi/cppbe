@@ -1,3 +1,20 @@
+=== v0.4.0 (2015-08-28) =========
+
+- allow to add file specific CXXFLAGS via code commentary, see the project.cpp
+  file for example usage, could be handy for SIMD programming (e.g. runtime CPU
+  dispatching)
+
+- add useful include/ directory with symlink to src/, should help with better
+  handling of #include directives
+
+- prepare .gitmodules file intended for submodules in lib/ directory
+
+- fix solving dependencies from dependency files when some dependency record
+  has been intentionally removed
+
+- fix some other minor bugs
+
+
 === v0.3.2 (2015-08-20) =========
 
 - add new variable containing path to lib/ directory for easy definition of
