@@ -147,6 +147,7 @@ $(PATH_TO_CONFIG_FILE)
 		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
 		| sed -n '1h;1!H;$$$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' \
 		| sed '/^$$$$/d;/\.$(SRC_SOURCE_EXTENSION)$$$$/d' \
+		| sort -u \
 		> $$(call FUNCTION_ADD_CLEAN_RECORD,$$*.$(BUILD_DEPENDENCY_EXTENSION))
 
 	@ # and compile the object file
