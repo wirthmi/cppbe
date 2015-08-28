@@ -72,6 +72,12 @@ BUILD_EXECUTABLES = project
 BUILD_LIBRARY = libproject.a
 
 
+# === INCLUDE DIRECTORY RELATED SECTION =========
+
+INCLUDE_DIRECTORY = include/
+PATH_TO_INCLUDE_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(INCLUDE_DIRECTORY)
+
+
 # === LIB DIRECTORY RELATED SECTION =========
 
 LIB_DIRECTORY = lib/
@@ -87,6 +93,14 @@ ASTYLE = astyle
 DOXYGEN = doxygen
 VIM = vim
 
-CXXFLAGS = -c -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_SRC_DIRECTORY))
+# notice that all flags are sucessively built during initialization until final
+# usage, the FUNCTION_GET_EXTENDED_CXXFLAGS should be used as the last step
+# instead of using CXXFLAGS variable directly in compilator call
+
+CXXFLAGS =
 LDFLAGS =
 LDLIBS =
+
+CXXFLAGS += -c
+CXXFLAGS += -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_SRC_DIRECTORY))
+CXXFLAGS += -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_INCLUDE_DIRECTORY))

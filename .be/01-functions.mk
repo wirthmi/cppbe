@@ -17,22 +17,35 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 # usage: $(call FUNCTION_GET_SUBSTRING,string,separator,substring_index)
-FUNCTION_GET_SUBSTRING = $(word $(3),$(subst $(2), ,$(1)))
+define FUNCTION_GET_SUBSTRING
+$(word $(3),$(subst $(2), ,$(1)))
+endef
 
 # usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
-FUNCTION_DROP_REDUNDANT_SLASHES = $(shell echo $(1) | sed 's/\/\/*/\//g')
+define FUNCTION_DROP_REDUNDANT_SLASHES
+$(shell echo $(1) | sed 's/\/\/*/\//g')
+endef
 
 # usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
-FUNCTION_FIND_FILES = $(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
+define FUNCTION_FIND_FILES
+$(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
+endef
 
 # usage: $(call FUNCTION_GET_FILES_FINDER,directory,filename_regex)
 define FUNCTION_GET_FILES_FINDER
-\
 find $(1) \
 	-type f \
 	-regextype posix-extended \
 	-iregex '^([^/]*/)*$(2)$$' \
 	-printf '%P\n'
+endef
+
+# usage: $(call FUNCTION_GET_EXTENDED_CXXFLAGS,source_file_path)
+define FUNCTION_GET_EXTENDED_CXXFLAGS
+$(shell
+	echo -n $(CXXFLAGS);
+	sed -n '/\/\/\s*CXXFLAGS\s*=/{s/^.*=//;p;q}' $(1)
+)
 endef
 
 
@@ -43,13 +56,12 @@ endef
 # be easily deleted even if corresponding source files has been already removed
 
 # usage: $(call FUNCTION_ADD_CLEAN_RECORD,any_file_paths)
-FUNCTION_ADD_CLEAN_RECORD = $(shell \
-	echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER) \
-)
+define FUNCTION_ADD_CLEAN_RECORD
+$(shell echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER))
+endef
 
 # usage: $(call FUNCTION_GET_CLEAN_RECORD_ADDER)
 define FUNCTION_GET_CLEAN_RECORD_ADDER
-\
 $(strip awk '
 	BEGIN {
 		clean_record_file = "$(BUILD_CLEAN_RECORD_FILE)";
@@ -81,10 +93,20 @@ endef
 # when dependency file doesn't exist the recompilation is forced because it may
 # be necessary to do it, see FUNCTION_GET_OBJECTS_BUILDING_TARGET
 
-# usage: $(call FUNCTION_SOLVE_DEPENDENCIES,dependency_file)
-FUNCTION_SOLVE_DEPENDENCIES = $(shell \
-	if [ -r $(1) ]; then cat $(1); else echo FORCE; fi \
+# usage: $(call FUNCTION_SOLVE_DEPENDENCIES,dependency_file_path)
+define FUNCTION_SOLVE_DEPENDENCIES
+$(shell
+	if [ ! -r $(1) ]; then
+		echo FORCE;
+	else
+		while read -r dependency; do
+			if [ -r $${dependency} ]; then
+				echo $${dependency};
+			fi;
+		done < $(1);
+	fi
 )
+endef
 
 
 # === CONCEPT OF SHARED TARGETS =========
@@ -100,7 +122,6 @@ FUNCTION_SOLVE_DEPENDENCIES = $(shell \
 # 	library_or_object_file_paths_allowing_stem \
 # ))
 define FUNCTION_GET_EXECUTABLES_BUILDING_TARGET
-
 $(1) DUMMY: %: $(2)
 	$(CXX) $(LDFLAGS) $$^ \
 		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@) $(LDLIBS)
@@ -112,7 +133,6 @@ endef
 # 	non_main_object_file_paths_allowing_stem \
 # ))
 define FUNCTION_GET_LIBRARY_BUILDING_TARGET
-
 $(1): %: $(2)
 	$(AR) crvs $$(call FUNCTION_ADD_CLEAN_RECORD,$$@) $$^
 endef
@@ -123,7 +143,6 @@ endef
 # 	source_file_paths_allowing_stem \
 # ))
 define FUNCTION_GET_OBJECTS_BUILDING_TARGET
-
 $(1): %.$(BUILD_OBJECT_EXTENSION): \
 $(2) \
 $$$$(call FUNCTION_SOLVE_DEPENDENCIES,%.$(BUILD_DEPENDENCY_EXTENSION)) \
@@ -133,13 +152,18 @@ $(PATH_TO_CONFIG_FILE)
 	mkdir -p $$(dir $$@)
 
 	@ # create a dependency file
-	@ $(CXX) -MM $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
+	@ $(CXX) -MM \
+		$$(call FUNCTION_GET_EXTENDED_CXXFLAGS,$$<) \
+		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
 		| sed -n '1h;1!H;$$$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' \
 		| sed '/^$$$$/d;/\.$(SRC_SOURCE_EXTENSION)$$$$/d' \
+		| sort -u \
 		> $$(call FUNCTION_ADD_CLEAN_RECORD,$$*.$(BUILD_DEPENDENCY_EXTENSION))
 
 	@ # and compile the object file
-	$(CXX) $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
+	$(CXX) \
+		$$(call FUNCTION_GET_EXTENDED_CXXFLAGS,$$<) \
+		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
 		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@)
 endef
 
@@ -148,7 +172,6 @@ endef
 # 	list_of_directory_path/target_name_eg_some_file \
 # ))
 define FUNCTION_GET_FORCING_SUBMAKES_TARGET
-
 $(1): FORCE
 	$(MAKE) -C $$(dir $$@) -j $(JOBS) $$(notdir $$@)
 endef
