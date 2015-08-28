@@ -35,6 +35,15 @@ find $(1) \
 	-printf '%P\n'
 endef
 
+# usage: $(call FUNCTION_GET_EXTENDED_CXXFLAGS,source_file_path)
+define FUNCTION_GET_EXTENDED_CXXFLAGS =
+\
+$(shell
+	echo -n $(CXXFLAGS);
+	sed -n '/\/\/\s*CXXFLAGS\s*=/{s/^.*=//;p;q}' $(1)
+)
+endef
+
 
 # === CONCEPT OF CLEAN RECORD FILES =========
 
@@ -81,7 +90,7 @@ endef
 # when dependency file doesn't exist the recompilation is forced because it may
 # be necessary to do it, see FUNCTION_GET_OBJECTS_BUILDING_TARGET
 
-# usage: $(call FUNCTION_SOLVE_DEPENDENCIES,dependency_file)
+# usage: $(call FUNCTION_SOLVE_DEPENDENCIES,dependency_file_path)
 FUNCTION_SOLVE_DEPENDENCIES = $(shell \
 	if [ -r $(1) ]; then cat $(1); else echo FORCE; fi \
 )
@@ -133,13 +142,17 @@ $(PATH_TO_CONFIG_FILE)
 	mkdir -p $$(dir $$@)
 
 	@ # create a dependency file
-	@ $(CXX) -MM $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
+	@ $(CXX) -MM \
+		$$(call FUNCTION_GET_EXTENDED_CXXFLAGS,$$<) \
+		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
 		| sed -n '1h;1!H;$$$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' \
 		| sed '/^$$$$/d;/\.$(SRC_SOURCE_EXTENSION)$$$$/d' \
 		> $$(call FUNCTION_ADD_CLEAN_RECORD,$$*.$(BUILD_DEPENDENCY_EXTENSION))
 
 	@ # and compile the object file
-	$(CXX) $(CXXFLAGS) $$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
+	$(CXX) \
+		$$(call FUNCTION_GET_EXTENDED_CXXFLAGS,$$<) \
+		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
 		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@)
 endef
 
