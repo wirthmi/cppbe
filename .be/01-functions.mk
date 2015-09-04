@@ -26,12 +26,17 @@ define FUNCTION_DROP_REDUNDANT_SLASHES
 $(shell echo $(1) | sed 's/\/\/*/\//g')
 endef
 
-# usage: $(call FUNCTION_FIND_FILES,directory,filename_regex)
+# usage: $(call FUNCTION_FILTER_BY_REGEXP,regexp,words)
+define FUNCTION_FILTER_BY_REGEXP
+$(shell echo $(2) | tr ' ' '\n' | grep -E '$(1)' | tr '\n' ' ')
+endef
+
+# usage: $(call FUNCTION_FIND_FILES,directory,filename_regexp)
 define FUNCTION_FIND_FILES
 $(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
 endef
 
-# usage: $(call FUNCTION_GET_FILES_FINDER,directory,filename_regex)
+# usage: $(call FUNCTION_GET_FILES_FINDER,directory,filename_regexp)
 define FUNCTION_GET_FILES_FINDER
 find $(1) \
 	-type f \
