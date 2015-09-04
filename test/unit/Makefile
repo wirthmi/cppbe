@@ -32,7 +32,7 @@ TEST_SOURCES = \
 TEST_OBJECTS = \
 	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_OBJECT_EXTENSION))
 
-all: $(CATCH)
+all: run
 
 run: $(CATCH) FORCE
 	./$< --durations yes
