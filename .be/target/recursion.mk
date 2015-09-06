@@ -30,4 +30,4 @@ _make-%: _SLAVE = $(call FUNCTION_GET_SUBSTRING,$*,-,1)
 _make-%: _TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
 
 _make-%: FORCE
-	@ $(MAKE) -C $(_SLAVE)/ $(_TARGET);
+	@ $(MAKE) -j $(JOBS) -C $(_SLAVE)/ $(_TARGET)
