@@ -20,6 +20,8 @@ include .be/init.mk
 
 include $(PATH_TO_TARGET_DIRECTORY)/recursion.mk
 
+ALL: _recurse-%-all
+
 all: _recurse-build-all
 
 clean: _recurse-%-clean
