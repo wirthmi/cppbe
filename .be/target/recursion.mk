@@ -16,15 +16,18 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-SUBMAKES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
+SLAVES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
 
-all clean: $(addprefix submake-,$(addsuffix -$$@,$(SUBMAKES)))
+$(SLAVES): _make-$$@-all
 
-$(SUBMAKES): submake-$$@-all
+_recurse-%: _SLAVES = $(filter $(call FUNCTION_GET_SUBSTRING,$*,-,1),$(SLAVES))
+_recurse-%: _TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
 
-submake-%: _SUBMAKE_NAME = $(call FUNCTION_GET_SUBSTRING,$*,-,1)
-submake-%: _SUBMAKE_TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
-submake-%: FORCE
+_recurse-%: $$(addprefix _make-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
+	@ # pattern rule recipes can't be empty, single comment is sufficient
 
-	@ # traverse with make into subdirectories
-	$(MAKE) -C $(_SUBMAKE_NAME)/ -j $(JOBS) $(_SUBMAKE_TARGET)
+_make-%: _SLAVE = $(call FUNCTION_GET_SUBSTRING,$*,-,1)
+_make-%: _TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
+
+_make-%: FORCE
+	@ $(MAKE) -C $(_SLAVE)/ $(_TARGET);
