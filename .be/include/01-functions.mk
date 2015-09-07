@@ -16,74 +16,109 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-# usage: $(call FUNCTION_GET_SUBSTRING,string,separator,substring_index)
-define FUNCTION_GET_SUBSTRING
-$(word $(3),$(subst $(2), ,$(1)))
+
+# usage: $(call trim,string_with_leading_or_trailing_whitespace)
+
+define trim
+$(shell
+	echo '$(1)' | sed 's/^\s*//;s/\s*$$//'
+)
 endef
 
-# usage: $(call FUNCTION_DROP_REDUNDANT_SLASHES,path)
-define FUNCTION_DROP_REDUNDANT_SLASHES
-$(shell echo $(1) | sed 's/\/\/*/\//g')
+
+# usage: $(call cut,delimiter,field,string_consisting_of_fields)
+
+define cut
+$(shell
+	echo '$(3)' | cut -d '$(1)' -f '$(2)'
+)
 endef
 
-# usage: $(call FUNCTION_FILTER_BY_REGEXP,regexp,words)
-define FUNCTION_FILTER_BY_REGEXP
-$(shell echo $(2) | tr ' ' '\n' | grep -E '$(1)' | tr '\n' ' ')
+
+# usage: $(call strip_slashes,path_with_redundant_slashes)
+
+define strip_slashes
+$(shell
+	echo '$(1)' | sed 's/\/\/*/\//g'
+)
 endef
 
-# usage: $(call FUNCTION_FIND_FILES,directory,filename_regexp)
-define FUNCTION_FIND_FILES
-$(shell $(call FUNCTION_GET_FILES_FINDER,$(1),$(2)))
+
+# usage: $(call filter_by_regexp,regexp,words)
+
+define filter_by_regexp
+$(shell
+	echo '$(2)'
+		| tr ' ' '\n'
+		| grep -E '$(call trim,$(1))'
+		| paste -s -d ' '
+)
 endef
 
-# usage: $(call FUNCTION_GET_FILES_FINDER,directory,filename_regexp)
-define FUNCTION_GET_FILES_FINDER
-find $(1) \
-	-type f \
-	-regextype posix-extended \
-	-iregex '^([^/]*/)*$(2)$$' \
+
+# usage: $(call find_by_regexp,path_to_directory,regexp)
+
+define find_by_regexp
+$(shell
+	$(call get_regexp_finder,$(1),$(2))
+)
+endef
+
+
+# usage: $(call get_regexp_finder,path_to_directory,regexp)
+
+define get_regexp_finder
+find $(1)
+	-type f
+	-regextype posix-extended
+	-iregex '^([^/]*/)*$(call trim,$(2))$$'
 	-printf '%P\n'
 endef
 
-# usage: $(call FUNCTION_GET_EXTENDED_CXXFLAGS,source_file_path)
-define FUNCTION_GET_EXTENDED_CXXFLAGS
+
+# usage: $(call get_extended_cxxflags,path_to_source_file)
+
+define get_extended_cxxflags
 $(shell
-	echo -n $(CXXFLAGS);
+	echo -n '$(CXXFLAGS)';
 	sed -n '/\/\/\s*CXXFLAGS\s*=/{s/^.*=//;p;q}' $(1)
 )
 endef
 
 
-# === CONCEPT OF CLEAN RECORD FILES =========
+# cleanup files are append only and help to track files produced by building
+# processes, when cleaning the environment all object files etc. could be
+# easily deleted even if corresponding source files has been already removed
+#
+# usage: $(call register_cleanup,paths_to_any_files)
 
-# they are append only and they help to keep track files produced by the
-# building process, when cleaning the environment all object files etc. could
-# be easily deleted even if corresponding source files has been already removed
-
-# usage: $(call FUNCTION_ADD_CLEAN_RECORD,any_file_paths)
-define FUNCTION_ADD_CLEAN_RECORD
-$(shell echo $(1) | $(call FUNCTION_GET_CLEAN_RECORD_ADDER))
+define register_cleanup
+$(shell
+	echo $(1) | $(call get_cleanup_registrar)
+)
 endef
 
-# usage: $(call FUNCTION_GET_CLEAN_RECORD_ADDER)
-define FUNCTION_GET_CLEAN_RECORD_ADDER
+
+# usage: $(call get_cleanup_registrar)
+
+define get_cleanup_registrar
 $(strip awk '
 	BEGIN {
-		clean_record_file = "$(BUILD_CLEAN_RECORD_FILE)";
-		while ( ( getline record < clean_record_file ) > 0 ) {
-			records[record] = 0;
+		cleanup_file = "$(BUILD_CLEANUP_FILE)";
+		while ( ( getline cleanup < cleanup_file ) > 0 ) {
+			cleanups[cleanup] = 0;
 		}
 	}
 	{
 		for ( i = 1; i <= NF; ++i ) {
-			records[$$i] = 1;
+			cleanups[$$i] = 1;
 		}
 	}
 	END {
-		for ( record in records ) {
-			print record > clean_record_file;
-			if ( records[record] == 1 ) {
-				print record;
+		for ( cleanup in cleanups ) {
+			print cleanup > cleanup_file;
+			if ( cleanups[cleanup] == 1 ) {
+				print cleanup;
 			}
 		}
 	}
@@ -91,24 +126,25 @@ $(strip awk '
 endef
 
 
-# === CONCEPT OF DEPENDENCY FILES =========
+# dependency files help to track dependencies that are crucial for each object
+# file, if appropriate dependency file already exists during building process
+# it should be used to decide whether it's really necessary to recompile related
+# object file or not, when dependency file doesn't exist the recompilation is
+# forced because it may be necessary to do it
+#
+# usage: $(call get_resolved_dependencies,path_to_dependency_file)
 
-# when a dependency file already exists while compiling the object, it should
-# be used to decide whether it is necessary to recompile the object or not,
-# when dependency file doesn't exist the recompilation is forced because it may
-# be necessary to do it, see FUNCTION_GET_OBJECTS_BUILDING_TARGET
-
-# usage: $(call FUNCTION_SOLVE_DEPENDENCIES,dependency_file_path)
-define FUNCTION_SOLVE_DEPENDENCIES
+define get_resolved_dependencies
 $(shell
 	if [ ! -r $(1) ]; then
-		echo FORCE;
+		echo _force;
 	else
-		while read -r dependency; do
+		while read dependency; do
 			if [ -r $${dependency} ]; then
 				echo $${dependency};
 			fi;
 		done < $(1);
 	fi
+	| paste -s -d ' '
 )
 endef
