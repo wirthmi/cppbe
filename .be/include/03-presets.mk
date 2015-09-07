@@ -16,22 +16,6 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-# === BASIC STUFF SECTION =========
-
-SHELL = /bin/bash
-JOBS = $(shell nproc)
-
-.DEFAULT_GOAL = all
-
-BE_DIRECTORY = .be/
-PATH_TO_ROOT_DIRECTORY = $(patsubst %$(BE_DIRECTORY),%,$(PATH_TO_BE_DIRECTORY))
-
-TARGET_DIRECTORY = target/
-PATH_TO_TARGET_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(TARGET_DIRECTORY)
-
-CONFIG_FILE = config.mk
-PATH_TO_CONFIG_FILE = $(PATH_TO_BE_DIRECTORY)/$(CONFIG_FILE)
-
 
 # === SRC DIRECTORY RELATED SECTION =========
 

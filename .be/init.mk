@@ -16,10 +16,35 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
+
+SHELL = /bin/bash
+
+MAKEFLAGS += -j $(shell nproc)
+
+.DEFAULT_GOAL = all
+
+
+# assign main build enviroment directory and file paths
+
+BE_DIRECTORY = .be/
 PATH_TO_BE_DIRECTORY = $(dir $(filter %init.mk,$(MAKEFILE_LIST)))
 
-# load all internals of build enviroment in strictly defined order
-include $(sort $(wildcard $(PATH_TO_BE_DIRECTORY)/??-*.mk))
+INCLUDE_DIRECTORY = include/
+PATH_TO_INCLUDE_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(INCLUDE_DIRECTORY)
 
-# load some basic shared targets, nothing fancy
+TARGET_DIRECTORY = target/
+PATH_TO_TARGET_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(TARGET_DIRECTORY)
+
+CONFIG_FILE = config.mk
+PATH_TO_CONFIG_FILE = $(PATH_TO_BE_DIRECTORY)/$(CONFIG_FILE)
+
+PATH_TO_ROOT_DIRECTORY = \
+	$(dir $(patsubst %$(BE_DIRECTORY),%.,$(PATH_TO_BE_DIRECTORY)))
+
+
+# load all internals in a strictly defined order, also load some basic shared
+# targets - nothing fancy there
+
+include $(sort $(wildcard $(PATH_TO_INCLUDE_DIRECTORY)/??-*.mk))
+
 include $(PATH_TO_TARGET_DIRECTORY)/global.mk
