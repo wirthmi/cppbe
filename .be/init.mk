@@ -29,14 +29,14 @@ MAKEFLAGS += -j $(shell nproc)
 BE_DIRECTORY = .be/
 PATH_TO_BE_DIRECTORY = $(dir $(filter %init.mk,$(MAKEFILE_LIST)))
 
-INCLUDE_DIRECTORY = include/
-PATH_TO_INCLUDE_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(INCLUDE_DIRECTORY)
+BE_INCLUDE_DIRECTORY = include/
+PATH_TO_BE_INCLUDE_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(BE_INCLUDE_DIRECTORY)
 
-TARGET_DIRECTORY = target/
-PATH_TO_TARGET_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(TARGET_DIRECTORY)
+BE_TARGET_DIRECTORY = target/
+PATH_TO_BE_TARGET_DIRECTORY = $(PATH_TO_BE_DIRECTORY)/$(BE_TARGET_DIRECTORY)
 
-CONFIG_FILE = config.mk
-PATH_TO_CONFIG_FILE = $(PATH_TO_BE_DIRECTORY)/$(CONFIG_FILE)
+BE_CONFIG_FILE = config.mk
+PATH_TO_BE_CONFIG_FILE = $(PATH_TO_BE_DIRECTORY)/$(BE_CONFIG_FILE)
 
 PATH_TO_ROOT_DIRECTORY = \
 	$(dir $(patsubst %$(BE_DIRECTORY),%.,$(PATH_TO_BE_DIRECTORY)))
@@ -45,6 +45,6 @@ PATH_TO_ROOT_DIRECTORY = \
 # load all internals in a strictly defined order, also load some basic shared
 # targets - nothing fancy there
 
-include $(sort $(wildcard $(PATH_TO_INCLUDE_DIRECTORY)/??-*.mk))
+include $(sort $(wildcard $(PATH_TO_BE_INCLUDE_DIRECTORY)/??-*.mk))
 
-include $(PATH_TO_TARGET_DIRECTORY)/global.mk
+include $(PATH_TO_BE_TARGET_DIRECTORY)/global.mk
