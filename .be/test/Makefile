@@ -28,4 +28,6 @@ $(info Done!)
 
 
 all clean: _force
+
+	@ # just for sure do something
 	@ :
