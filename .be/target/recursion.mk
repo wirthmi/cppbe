@@ -16,18 +16,25 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-SLAVES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
 
-$(SLAVES): _make-$$@-all
+# a pattern rule target formed as _recurse-<filter>-<target> which selects sub-
+# directories containing Makefiles - let's call them slaves, filters them by
+# the <filter> field and then launches appropriate submakes making the <target>
+# on them
 
-_recurse-%: _SLAVES = $(filter $(call FUNCTION_GET_SUBSTRING,$*,-,1),$(SLAVES))
-_recurse-%: _TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
+RECURSE_SLAVES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
 
-_recurse-%: $$(addprefix _make-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
+_recurse-%: _SLAVES = $(filter $(call cut,-,1,$*),$(RECURSE_SLAVES))
+_recurse-%: _TARGET = $(call cut,-,2,$*)
+
+_recurse-%: \
+$$(addprefix _recurse_submake-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
+
 	@ # pattern rule recipes can't be empty, single comment is sufficient
 
-_make-%: _SLAVE = $(call FUNCTION_GET_SUBSTRING,$*,-,1)
-_make-%: _TARGET = $(call FUNCTION_GET_SUBSTRING,$*,-,2)
+_recurse_submake-%: _SLAVE = $(call cut,-,1,$*)
+_recurse_submake-%: _TARGET = $(call cut,-,2,$*)
 
-_make-%: FORCE
-	@ $(MAKE) -j $(JOBS) -C $(_SLAVE)/ $(_TARGET)
+_recurse_submake-%: _force
+
+	@ $(MAKE) -C $(_SLAVE)/ $(_TARGET)
