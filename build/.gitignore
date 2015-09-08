@@ -1,4 +1,3 @@
-.beclean
-*.d
-*.o
-*.a
+*
+!.gitignore
+!Makefile

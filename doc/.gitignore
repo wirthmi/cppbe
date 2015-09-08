@@ -1,4 +1,6 @@
-.beclean
+.becleanup
+
 html/
 index.html
+
 doxygen_*
