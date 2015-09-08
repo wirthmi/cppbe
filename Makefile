@@ -16,9 +16,10 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include .be/init.mk
 
+include .be/init.mk
 include $(PATH_TO_TARGET_DIRECTORY)/recursion.mk
+
 
 ALL: _recurse-%-all
 
@@ -26,5 +27,12 @@ all: _recurse-build-all
 
 clean: _recurse-%-clean
 
-config: FORCE
+$(RECURSE_SLAVES): _recurse-$$@-all
+
+
+# should provide an easy way how to edit building enviroment's configuration
+# which is placed in the .be/config.mk file if you want to edit it manually
+
+config: _force
+
 	$(EDITOR) $(PATH_TO_CONFIG_FILE)
