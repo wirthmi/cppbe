@@ -16,13 +16,16 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-clean: FORCE
 
-	@ # try to delete files according to clean record file
-	if [ -r $(BUILD_CLEAN_RECORD_FILE) ]; then \
-		xargs -a $(BUILD_CLEAN_RECORD_FILE) -d '\n' rm -f; \
-		rm $(BUILD_CLEAN_RECORD_FILE); \
+# attempts to delete all files tracked by the cleanup file and always deletes
+# empty directories which Git won't track anyway, see register_cleanup function
+# for more information about the cleanup concept
+
+_clean: _force
+
+	if [ -r $(BUILD_CLEANUP_FILE) ]; then \
+		xargs -a $(BUILD_CLEANUP_FILE) -d '\n' -I {} rm -f {}; \
+		rm $(BUILD_CLEANUP_FILE); \
 	fi
 
-	@ # and always delete all empty subdirectories
 	find ./ -depth -type d -empty -exec rmdir {} \;
