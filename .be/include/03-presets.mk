@@ -17,10 +17,52 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 
-# === SRC DIRECTORY RELATED SECTION =========
+# paths to required tools, they're usually reachable from shell's PATH variable
+
+CXX = g++
+#CXX = clang++
+AR = ar
+ASTYLE = astyle
+DOXYGEN = doxygen
+VIM = vim
+
+
+# an editor is later selected preferentially in accordance with build
+# environment's configuration, shell's VISUAL and EDITOR variables or with last
+# fallback to Vim
+
+EDITOR =
+
+
+# following flags could be sucessively built during initialization until final
+# usage, e.g. the get_extended_cxxflags function is being used as the last step
+# instead of using CXXFLAGS variable directly in compilator calls
+
+CXXFLAGS = -c
+LDFLAGS =
+LDLIBS =
+
+
+# stuff related to the build/ directory
+
+BUILD_DIRECTORY = build/
+PATH_TO_BUILD_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(BUILD_DIRECTORY)
+
+BUILD_CLEANUP_FILE = .becleanup
+
+BUILD_DEPENDENCY_EXTENSION = d
+BUILD_OBJECT_EXTENSION = o
+
+BUILD_EXECUTABLES = project
+BUILD_LIBRARY = libproject.a
+
+
+# stuff related to the src/ directory
 
 SRC_DIRECTORY = src/
 PATH_TO_SRC_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(SRC_DIRECTORY)
+
+CXXFLAGS += -I$(call strip_slashes,$(PATH_TO_SRC_DIRECTORY))
 
 SRC_HEADER_EXTENSIONS = hpp|tpp
 SRC_SOURCE_EXTENSION = cpp
@@ -39,52 +81,24 @@ SRC_ASTYLE_OPTIONS = \
 	--align-reference=middle \
 	--add-brackets \
 	--close-templates \
-	--suffix=none \
+	--suffix=none
 
 
-# === BUILD DIRECTORY RELATED SECTION =========
-
-BUILD_DIRECTORY = build/
-PATH_TO_BUILD_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(BUILD_DIRECTORY)
-
-BUILD_CLEAN_RECORD_FILE = .beclean
-
-BUILD_DEPENDENCY_EXTENSION = d
-BUILD_OBJECT_EXTENSION = o
-
-BUILD_EXECUTABLES = project
-BUILD_LIBRARY = libproject.a
-
-
-# === INCLUDE DIRECTORY RELATED SECTION =========
+# stuff related to the include/ directory
 
 INCLUDE_DIRECTORY = include/
 PATH_TO_INCLUDE_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(INCLUDE_DIRECTORY)
 
+CXXFLAGS += -I$(call strip_slashes,$(PATH_TO_INCLUDE_DIRECTORY))
 
-# === LIB DIRECTORY RELATED SECTION =========
+
+# stuff related to the lib/ directory
 
 LIB_DIRECTORY = lib/
 PATH_TO_LIB_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(LIB_DIRECTORY)
 
 
-# === RUNTIME STUFF SECTION =========
+# stuff related to the data/ directory
 
-CXX = g++
-#CXX = clang++
-AR = ar
-ASTYLE = astyle
-DOXYGEN = doxygen
-VIM = vim
-
-# notice that all flags are sucessively built during initialization until final
-# usage, the FUNCTION_GET_EXTENDED_CXXFLAGS should be used as the last step
-# instead of using CXXFLAGS variable directly in compilator call
-
-CXXFLAGS =
-LDFLAGS =
-LDLIBS =
-
-CXXFLAGS += -c
-CXXFLAGS += -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_SRC_DIRECTORY))
-CXXFLAGS += -I$(call FUNCTION_DROP_REDUNDANT_SLASHES,$(PATH_TO_INCLUDE_DIRECTORY))
+DATA_DIRECTORY = data/
+PATH_TO_DATA_DIRECTORY = $(PATH_TO_ROOT_DIRECTORY)/$(DATA_DIRECTORY)
