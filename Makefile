@@ -18,7 +18,7 @@
 
 
 include .be/init.mk
-include $(PATH_TO_TARGET_DIRECTORY)/recursion.mk
+include $(PATH_TO_BE_TARGET_DIRECTORY)/recursion.mk
 
 
 ALL: _recurse-%-all
@@ -35,4 +35,4 @@ $(RECURSE_SLAVES): _recurse-$$@-all
 
 config: _force
 
-	$(EDITOR) $(PATH_TO_CONFIG_FILE)
+	$(EDITOR) $(PATH_TO_BE_CONFIG_FILE)

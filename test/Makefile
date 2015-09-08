@@ -18,7 +18,7 @@
 
 
 include ../.be/init.mk
-include $(PATH_TO_TARGET_DIRECTORY)/recursion.mk
+include $(PATH_TO_BE_TARGET_DIRECTORY)/recursion.mk
 
 
 all clean: _recurse-%-$$@
