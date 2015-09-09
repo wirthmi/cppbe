@@ -16,69 +16,109 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-# === CONCEPT OF SHARED TARGETS =========
 
-# there are two types of shared targets (i.e. reusable targets for several
-# Makefiles), first of all configurable targets which are defined here as
-# evaluable functions and secondly just-include targets that are kept as
-# separate files in the TARGET_DIRECTORY
+# notice that there are two types of shared targets (i.e. reusable targets for
+# several Makefiles), first of all there are configurable targets which are
+# defined here as evaluable functions, and there are also just-include targets
+# that are kept as separate files within the .be/target/ directory
 
-# usage:
-# $(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
-# 	executable_names_or_empty, \
-# 	library_or_object_file_paths_allowing_stem \
+
+# usage: $(eval $(call place_make_slaves_target, \
+# 	path_to_directory/target_name_constructs \
 # ))
-define FUNCTION_GET_EXECUTABLES_BUILDING_TARGET
-$(1) DUMMY: %: $(2)
-	$(CXX) $(LDFLAGS) $$^ \
-		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@) $(LDLIBS)
+
+define place_make_slaves_target
+
+$(1): _SLAVE = $$(dir $$@)
+$(1): _TARGET = $$(notdir $$@)
+
+$(1): _force
+
+	@ $(MAKE) -C $$(_SLAVE)/ $$(_TARGET)
+
 endef
 
-# usage:
-# $(eval $(call FUNCTION_GET_LIBRARY_BUILDING_TARGET, \
-# 	library_name, \
-# 	non_main_object_file_paths_allowing_stem \
+
+# usage: $(eval $(call place_executable_files_building_target, \
+# 	zero_or_more_paths_to_executable_files, \
+# 	paths_to_library_files_allowing_stem, \
+# 	paths_to_object_files_allowing_stem, \
 # ))
-define FUNCTION_GET_LIBRARY_BUILDING_TARGET
-$(1): %: $(2)
-	$(AR) crvs $$(call FUNCTION_ADD_CLEAN_RECORD,$$@) $$^
-endef
 
-# usage:
-# $(eval $(call FUNCTION_GET_OBJECTS_BUILDING_TARGET, \
-# 	object_file_paths, \
-# 	source_file_paths_allowing_stem \
-# ))
-define FUNCTION_GET_OBJECTS_BUILDING_TARGET
-$(1): %.$(BUILD_OBJECT_EXTENSION): \
-$(2) \
-$$$$(call FUNCTION_SOLVE_DEPENDENCIES,%.$(BUILD_DEPENDENCY_EXTENSION)) \
-$(PATH_TO_CONFIG_FILE)
+define place_executable_files_building_target
 
-	@ # ensure target path existence
-	mkdir -p $$(dir $$@)
+$(1) _dummy: _LIBRARY_FILES = \
+	$$(foreach _LIBRARY_FILE,$(2),$$(call prettify_path,$$(_LIBRARY_FILE)))
+$(1) _dummy: _OBJECT_FILES = \
+	$$(foreach _OBJECT_FILE,$(3),$$(call prettify_path,$$(_OBJECT_FILE)))
+$(1) _dummy: _EXECUTABLE_FILE = \
+	$$(call prettify_path,$$@)
 
-	@ # create a dependency file
-	@ $(CXX) -MM \
-		$$(call FUNCTION_GET_EXTENDED_CXXFLAGS,$$<) \
-		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
-		| sed -n '1h;1!H;$$$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' \
-		| sed '/^$$$$/d;/\.$(SRC_SOURCE_EXTENSION)$$$$/d' \
-		| sort -u \
-		> $$(call FUNCTION_ADD_CLEAN_RECORD,$$*.$(BUILD_DEPENDENCY_EXTENSION))
+$(1) _dummy: %: $$$$(_LIBRARY_FILES) $$$$(_OBJECT_FILES)
 
-	@ # and compile the object file
 	$(CXX) \
-		$$(call FUNCTION_GET_EXTENDED_CXXFLAGS,$$<) \
-		$$(call FUNCTION_DROP_REDUNDANT_SLASHES,$$<) \
-		-o $$(call FUNCTION_ADD_CLEAN_RECORD,$$@)
+		$(LDFLAGS) \
+		$$(_OBJECT_FILES) \
+		-o $$(call register_cleanup,$$(_EXECUTABLE_FILE)) \
+		$$(_LIBRARY_FILES) \
+		$(LDLIBS)
+
 endef
 
-# usage:
-# $(eval $(call FUNCTION_GET_FORCING_SUBMAKES_TARGET, \
-# 	list_of_directory_path/target_name_eg_some_file \
+
+# usage: $(eval $(call place_library_file_building_target, \
+# 	path_to_library_file, \
+# 	paths_to_object_files \
 # ))
-define FUNCTION_GET_FORCING_SUBMAKES_TARGET
-$(1): FORCE
-	$(MAKE) -C $$(dir $$@) -j $(JOBS) $$(notdir $$@)
+
+define place_library_file_building_target
+
+$(1): _OBJECT_FILES = \
+	$(foreach _OBJECT_FILE,$(2),$(call prettify_path,$(_OBJECT_FILE)))
+$(1): _LIBRARY_FILE = \
+	$(call prettify_path,$(1))
+
+$(1): $$$$(_OBJECT_FILES)
+
+	$(AR) crvs \
+		$$(call register_cleanup,$$(_LIBRARY_FILE)) $$(_OBJECT_FILES)
+
+endef
+
+
+# usage: $(eval $(call place_object_files_building_target, \
+# 	paths_to_object_files, \
+# 	path_to_source_directory \
+# ))
+
+define place_object_files_building_target
+
+$(1): _SOURCE_DIRECTORY = $(or $(call trim,$(2)),./)
+
+$(1): _SOURCE_FILE = \
+	$$(call prettify_path,$$(_SOURCE_DIRECTORY)/$$*.$(SRC_SOURCE_EXTENSION))
+$(1): _DEPENDENCY_FILE = \
+	$$(call prettify_path,$$*.$(BUILD_DEPENDENCY_EXTENSION))
+$(1): _OBJECT_FILE = \
+	$$(call prettify_path,$$@)
+
+$(1): _CXXFLAGS = $$(call get_extended_cxxflags,$$(_SOURCE_FILE))
+
+$(1): %.$(BUILD_OBJECT_EXTENSION): \
+\
+	$$$$(_SOURCE_FILE) \
+	$$$$(call get_resolved_dependencies,$$$$(_DEPENDENCY_FILE)) \
+	$(PATH_TO_BE_CONFIG_FILE)
+
+	mkdir -p $$(dir $$(_OBJECT_FILE))
+
+	@ $(CXX) -MM $$(_CXXFLAGS) $$(_SOURCE_FILE) \
+	| sed -n '1h;1!H;$$$${g;s/^[^:]*://;s/[ \\]/\n/g;p}' \
+	| sed '/^$$$$/d;/\.$(SRC_SOURCE_EXTENSION)$$$$/d' \
+	| sort -u \
+	> $$(call register_cleanup,$$(_DEPENDENCY_FILE))
+
+	$(CXX) $$(_CXXFLAGS) \
+		$$(_SOURCE_FILE) -o $$(call register_cleanup,$$(_OBJECT_FILE))
+
 endef
