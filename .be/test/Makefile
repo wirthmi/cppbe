@@ -28,5 +28,3 @@ $(info Done!)
 
 
 all clean: _force
-
-	@ :
