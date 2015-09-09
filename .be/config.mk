@@ -41,8 +41,8 @@
 #BUILD_EXECUTABLES = project
 
 
-# name of final static library constructed from all object files except the
-# ones related to BUILD_EXECUTABLES variable mentioned above
+# name of final static library file constructed from all object files except
+# the ones related to BUILD_EXECUTABLES variable mentioned above
 
 #BUILD_LIBRARY_FILE = libproject.a
 

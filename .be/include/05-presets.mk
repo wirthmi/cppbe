@@ -29,7 +29,7 @@ SRC_SOURCES = $(call find_by_regexp, \
 	$(PATH_TO_SRC_DIRECTORY),.*\.$(SRC_SOURCE_EXTENSION))
 
 
-# create paths to header and source files inclusive of path to src/ directory
+# create paths to header and source files incl. path to src/ directory
 
 PATHS_TO_SRC_HEADERS = $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS))
 
@@ -48,7 +48,7 @@ BUILD_OBJECTS_EXCEPT_MAIN = $(filter-out \
 	$(BUILD_OBJECTS_ONLY_MAIN),$(BUILD_OBJECTS))
 
 
-# create paths executables and library inclusive of path to build/ directory
+# create paths to executable and library files incl. path to build/ directory
 
 PATHS_TO_BUILD_EXECUTABLES = $(addprefix \
 	$(PATH_TO_BUILD_DIRECTORY)/,$(BUILD_EXECUTABLES))
