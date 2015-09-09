@@ -39,7 +39,7 @@ endef
 
 define strip_slashes
 $(shell
-	echo '$(1)' | sed 's/\/\/*/\//g'
+	echo $(1) | sed 's/\/\/*/\//g'
 )
 endef
 
@@ -61,9 +61,9 @@ endef
 define filter_by_regexp
 $(shell
 	echo '$(2)'
-		| tr ' ' '\n'
-		| grep -E '$(call trim,$(1))'
-		| paste -s -d ' '
+	| tr ' ' '\n'
+	| grep -E '$(call trim,$(1))'
+	| paste -s -d ' '
 )
 endef
 
@@ -103,8 +103,8 @@ endef
 define detect_platform
 $(shell
 	uname -o
-		| tr '[:upper:]' '[:lower:]'
-		| sed 's/^.*\(\(linux\)\|\(cygwin\)\).*$$/\1/'
+	| tr '[:upper:]' '[:lower:]'
+	| sed 's/^.*\(\(linux\)\|\(cygwin\)\).*$$/\1/'
 )
 endef
 
