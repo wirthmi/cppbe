@@ -86,6 +86,17 @@ $(shell
 endef
 
 
+# usage: $(call detect_platform)
+
+define detect_platform
+$(shell
+	uname -o
+		| tr '[:upper:]' '[:lower:]'
+		| sed 's/^.*\(\(linux\)\|\(cygwin\)\).*$$/\1/'
+)
+endef
+
+
 # cleanup files are append only and help to track files produced by building
 # processes, when cleaning the environment all object files etc. could be
 # easily deleted even if corresponding source files has been already removed
