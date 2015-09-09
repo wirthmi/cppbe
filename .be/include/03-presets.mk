@@ -67,13 +67,15 @@ CXXFLAGS += -I$(call strip_slashes,$(PATH_TO_SRC_DIRECTORY))
 SRC_HEADER_EXTENSIONS = hpp|tpp
 SRC_SOURCE_EXTENSION = cpp
 
-SRC_ASTYLE_OPTIONS = \
+SRC_ASTYLE_RULES = \
 	--style=java \
 	--indent=spaces=2 \
 	--attach-namespaces \
 	--attach-classes \
 	--indent-namespaces \
 	--indent-switches \
+	--indent-preproc-define \
+	--indent-preproc-cond \
 	--pad-oper \
 	--pad-paren-in \
 	--pad-header \
