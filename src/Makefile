@@ -16,13 +16,19 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
+
 include ../.be/init.mk
 
-all clean:
 
-style: $(SRC_HEADERS_AND_SOURCES)
+all clean: _force
 
-$(SRC_HEADERS_AND_SOURCES): FORCE
 
-	@ # it's better to run astyle each time for single file
-	@ $(ASTYLE) $(SRC_ASTYLE_OPTIONS) $@
+# applies astyle rules separately on each header or source file, single astyle
+# process could be launched also in a recursive mode but then it wouldn't be
+# possible to let the make apply style just on one selected file
+
+style: $(SRC_HEADERS) $(SRC_SOURCES)
+
+$(SRC_HEADERS) $(SRC_SOURCES): _force
+
+	@ $(ASTYLE) $(SRC_ASTYLE_RULES) $@
