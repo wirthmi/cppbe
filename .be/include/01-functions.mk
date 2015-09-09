@@ -44,6 +44,18 @@ $(shell
 endef
 
 
+# usage: $(call prettify_path,path_with_ugly_itches)
+
+define prettify_path
+$(call strip_slashes,$(shell
+	echo $(1)
+	| sed -r 's#(^|/)(\./)+#\1#g'
+	| sed -r 's#(^|/)\.$$#\1#'
+	| sed -r ':A;{s#(^|/)((\.[^/.][^/]*)|([^/.][^/]*))/\.\.(/|$$)#\1#;tA}'
+))
+endef
+
+
 # usage: $(call filter_by_regexp,regexp,words)
 
 define filter_by_regexp
