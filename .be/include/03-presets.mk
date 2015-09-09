@@ -56,7 +56,7 @@ BUILD_DEPENDENCY_EXTENSION = d
 BUILD_OBJECT_EXTENSION = o
 
 BUILD_EXECUTABLES = project
-BUILD_LIBRARY = libproject.a
+BUILD_LIBRARY_FILE = libproject.a
 
 
 # stuff related to the src/ directory

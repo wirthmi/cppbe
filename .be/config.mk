@@ -33,9 +33,10 @@
 
 
 # names of final executable binaries separated by spaces, for each executable
-# there must be a source file of the same name and with appropriate extension
-# containing definition of the main() function, if no executables are given,
-# only a static library defined below in BUILD_LIBRARY variable will be built
+# file there must be a source file of the same name and with an appropriate
+# extension containing definition of the main() function, if no executables
+# are given, only a static library file defined below in a BUILD_LIBRARY_FILE
+# variable will be built
 
 #BUILD_EXECUTABLES = project
 
@@ -43,7 +44,7 @@
 # name of final static library constructed from all object files except the
 # ones related to BUILD_EXECUTABLES variable mentioned above
 
-#BUILD_LIBRARY = libproject.a
+#BUILD_LIBRARY_FILE = libproject.a
 
 
 # allowed extensions for header files separated by vertical bars and single

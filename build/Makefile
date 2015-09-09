@@ -21,19 +21,19 @@ include ../.be/init.mk
 include $(PATH_TO_BE_TARGET_DIRECTORY)/clean.mk
 
 
-all: $(BUILD_EXECUTABLES) $(BUILD_LIBRARY)
+all: $(BUILD_EXECUTABLES) $(BUILD_LIBRARY_FILE)
 
 clean: _clean
 
 
 $(eval $(call place_executable_files_building_target, \
 	$(BUILD_EXECUTABLES), \
-	$(BUILD_LIBRARY), \
+	$(BUILD_LIBRARY_FILE), \
 	$$*.$(BUILD_OBJECT_EXTENSION) \
 ))
 
 $(eval $(call place_library_file_building_target, \
-	$(BUILD_LIBRARY), \
+	$(BUILD_LIBRARY_FILE), \
 	$(BUILD_OBJECTS_EXCEPT_MAIN) \
 ))
 
