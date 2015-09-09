@@ -27,7 +27,7 @@ DOXYGEN = doxygen
 VIM = vim
 
 
-# an editor is later selected preferentially in accordance with build
+# text editor is later selected preferentially in accordance with build
 # environment's configuration, shell's VISUAL and EDITOR variables or with last
 # fallback to Vim
 
