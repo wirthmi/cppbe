@@ -16,54 +16,45 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-# === BASIC STUFF SECTION =========
 
-EDITOR = $(shell echo $${VISUAL} $${EDITOR} $(VIM) | sed 's/\s.*$$//')
+EDITOR := $(word 1,$(EDITOR) $(shell echo -n $${VISUAL} $${EDITOR}) $(VIM))
 
 
-# === SRC DIRECTORY RELATED SECTION =========
+# lookup for paths to header and source files relative to src/ directory
 
-# a lookup for header and source paths, notice that all of them will be
-# relative to the SRC_DIRECTORY and without the "./" prefix
-
-SRC_HEADERS = $(call FUNCTION_FIND_FILES, \
+SRC_HEADERS = $(call find_by_regexp, \
 	$(PATH_TO_SRC_DIRECTORY),.*\.($(SRC_HEADER_EXTENSIONS)))
 
-SRC_SOURCES = $(call FUNCTION_FIND_FILES, \
+SRC_SOURCES = $(call find_by_regexp, \
 	$(PATH_TO_SRC_DIRECTORY),.*\.$(SRC_SOURCE_EXTENSION))
 
-SRC_HEADERS_AND_SOURCES = $(SRC_HEADERS) $(SRC_SOURCES)
 
-# construct full header and source paths that can be used from anywhere
+# create paths to header and source files inclusive of path to src/ directory
 
-PATHS_TO_SRC_HEADERS = \
-	$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS))
-PATHS_TO_SRC_SOURCES = \
-	$(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_SOURCES))
+PATHS_TO_SRC_HEADERS = $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS))
 
-PATHS_TO_SRC_HEADERS_AND_SOURCES = \
-	$(PATHS_TO_SRC_HEADERS) $(PATHS_TO_SRC_SOURCES)
+PATHS_TO_SRC_SOURCES = $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_SOURCES))
 
 
-# === BUILD DIRECTORY RELATED SECTION =========
+# derive paths to object files relative to build/ directory
 
-# derivation of object paths of various types, similarly they are also
-# relative to the BUILD_DIRECTORY and again without the "./" prefix
+BUILD_OBJECTS = $(patsubst \
+	%.$(SRC_SOURCE_EXTENSION),%.$(BUILD_OBJECT_EXTENSION),$(SRC_SOURCES))
 
-BUILD_OBJECTS = \
-	$(SRC_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_OBJECT_EXTENSION))
-BUILD_OBJECTS_ONLY_MAIN = \
-	$(addsuffix .$(BUILD_OBJECT_EXTENSION),$(BUILD_EXECUTABLES))
-BUILD_OBJECTS_EXCEPT_MAIN = \
-	$(filter-out $(BUILD_OBJECTS_ONLY_MAIN),$(BUILD_OBJECTS))
+BUILD_OBJECTS_ONLY_MAIN = $(addsuffix \
+	.$(BUILD_OBJECT_EXTENSION),$(BUILD_EXECUTABLES))
 
-# construct full executable and library paths that can be used from anywhere
+BUILD_OBJECTS_EXCEPT_MAIN = $(filter-out \
+	$(BUILD_OBJECTS_ONLY_MAIN),$(BUILD_OBJECTS))
 
-PATHS_TO_BUILD_EXECUTABLES = \
-	$(addprefix $(PATH_TO_BUILD_DIRECTORY)/,$(BUILD_EXECUTABLES))
 
-PATH_TO_FIRST_EXECUTABLE = $(word 1,$(PATHS_TO_BUILD_EXECUTABLES))
-PATH_TO_SECOND_EXECUTABLE = $(word 2,$(PATHS_TO_BUILD_EXECUTABLES))
-PATH_TO_THIRD_EXECUTABLE = $(word 3,$(PATHS_TO_BUILD_EXECUTABLES))
+# create paths executables and library inclusive of path to build/ directory
+
+PATHS_TO_BUILD_EXECUTABLES = $(addprefix \
+	$(PATH_TO_BUILD_DIRECTORY)/,$(BUILD_EXECUTABLES))
+
+PATH_TO_1ST_EXECUTABLE = $(word 1,$(PATHS_TO_BUILD_EXECUTABLES))
+PATH_TO_2ND_EXECUTABLE = $(word 2,$(PATHS_TO_BUILD_EXECUTABLES))
+PATH_TO_3RD_EXECUTABLE = $(word 3,$(PATHS_TO_BUILD_EXECUTABLES))
 
 PATH_TO_BUILD_LIBRARY = $(PATH_TO_BUILD_DIRECTORY)/$(BUILD_LIBRARY)
