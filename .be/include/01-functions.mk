@@ -100,7 +100,7 @@ endef
 # cleanup files are append only and help to track files produced by building
 # processes, when cleaning the environment all object files etc. could be
 # easily deleted even if corresponding source files has been already removed
-#
+
 # usage: $(call register_cleanup,paths_to_any_files)
 
 define register_cleanup
@@ -142,7 +142,7 @@ endef
 # it should be used to decide whether it's really necessary to recompile related
 # object file or not, when dependency file doesn't exist the recompilation is
 # forced because it may be necessary to do it
-#
+
 # usage: $(call get_resolved_dependencies,path_to_dependency_file)
 
 define get_resolved_dependencies
