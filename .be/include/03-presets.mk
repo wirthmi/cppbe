@@ -83,7 +83,7 @@ SRC_ASTYLE_RULES = \
 	--align-reference=middle \
 	--add-brackets \
 	--close-templates \
-	--suffix=none
+	--suffix=none \
 
 
 # stuff related to the include/ directory
