@@ -16,23 +16,28 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
-include ../.be/init.mk
 
-include $(PATH_TO_TARGET_DIRECTORY)/clean.mk
+include ../.be/init.mk
+include $(PATH_TO_BE_TARGET_DIRECTORY)/clean.mk
+
 
 all: $(BUILD_EXECUTABLES) $(BUILD_LIBRARY)
 
-$(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
+clean: _clean
+
+
+$(eval $(call place_executable_files_building_target, \
 	$(BUILD_EXECUTABLES), \
-	%.$(BUILD_OBJECT_EXTENSION) $(BUILD_LIBRARY) \
+	$(BUILD_LIBRARY), \
+	$$*.$(BUILD_OBJECT_EXTENSION) \
 ))
 
-$(eval $(call FUNCTION_GET_LIBRARY_BUILDING_TARGET, \
+$(eval $(call place_library_file_building_target, \
 	$(BUILD_LIBRARY), \
 	$(BUILD_OBJECTS_EXCEPT_MAIN) \
 ))
 
-$(eval $(call FUNCTION_GET_OBJECTS_BUILDING_TARGET, \
+$(eval $(call place_object_files_building_target, \
 	$(BUILD_OBJECTS), \
-	$(PATH_TO_SRC_DIRECTORY)/%.$(SRC_SOURCE_EXTENSION) \
+	$(PATH_TO_SRC_DIRECTORY) \
 ))
