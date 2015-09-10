@@ -24,15 +24,17 @@
 
 
 # usage: $(eval $(call place_make_slaves_target, \
-# 	path_to_directory/target_name_constructs \
+# 	slave_directory/target_name_pairs \
 # ))
 
 define place_make_slaves_target
 
-$(1): _SLAVE = $$(dir $$@)
-$(1): _TARGET = $$(notdir $$@)
+$(eval _1 = $(call map,prettify_path,$(1)))
 
-$(1): _force
+$(_1): _SLAVE = $$(dir $$@)
+$(_1): _TARGET = $$(notdir $$@)
+
+$(_1): _force
 
 	@ $(MAKE) -C $$(_SLAVE)/ $$(_TARGET)
 
@@ -47,14 +49,13 @@ endef
 
 define place_executable_files_building_target
 
-$(1) _dummy: _LIBRARY_FILES = \
-	$$(foreach _LIBRARY_FILE,$(2),$$(call prettify_path,$$(_LIBRARY_FILE)))
-$(1) _dummy: _OBJECT_FILES = \
-	$$(foreach _OBJECT_FILE,$(3),$$(call prettify_path,$$(_OBJECT_FILE)))
-$(1) _dummy: _EXECUTABLE_FILE = \
-	$$(call prettify_path,$$@)
+$(eval _1 = $(call map,prettify_path,$(1)))
 
-$(1) _dummy: %: $$$$(_LIBRARY_FILES) $$$$(_OBJECT_FILES)
+$(_1) _dummy: _LIBRARY_FILES = $$(call map,prettify_path,$(2))
+$(_1) _dummy: _OBJECT_FILES = $$(call map,prettify_path,$(3))
+$(_1) _dummy: _EXECUTABLE_FILE = $$@
+
+$(_1) _dummy: %: $$$$(_LIBRARY_FILES) $$$$(_OBJECT_FILES)
 
 	$(CXX) \
 		$(LDFLAGS) \
@@ -73,12 +74,12 @@ endef
 
 define place_library_file_building_target
 
-$(1): _OBJECT_FILES = \
-	$(foreach _OBJECT_FILE,$(2),$(call prettify_path,$(_OBJECT_FILE)))
-$(1): _LIBRARY_FILE = \
-	$(call prettify_path,$(1))
+$(eval _1 = $(call prettify_path,$(1)))
 
-$(1): $$$$(_OBJECT_FILES)
+$(_1): _OBJECT_FILES = $(call map,prettify_path,$(2))
+$(_1): _LIBRARY_FILE = $$@
+
+$(_1): $$$$(_OBJECT_FILES)
 
 	$(AR) crvs \
 		$$(call register_cleanup,$$(_LIBRARY_FILE)) $$(_OBJECT_FILES)
@@ -93,18 +94,17 @@ endef
 
 define place_object_files_building_target
 
-$(1): _SOURCE_DIRECTORY = $(or $(call trim,$(2)),./)
+$(eval _1 = $(call map,prettify_path,$(1)))
 
-$(1): _SOURCE_FILE = \
-	$$(call prettify_path,$$(_SOURCE_DIRECTORY)/$$*.$(SRC_SOURCE_EXTENSION))
-$(1): _DEPENDENCY_FILE = \
-	$$(call prettify_path,$$*.$(BUILD_DEPENDENCY_EXTENSION))
-$(1): _OBJECT_FILE = \
-	$$(call prettify_path,$$@)
+$(_1): _SOURCE_DIRECTORY = $(call prettify_path,$(or $(call trim,$(2)),.)/)
 
-$(1): _CXXFLAGS = $$(call get_extended_cxxflags,$$(_SOURCE_FILE))
+$(_1): _SOURCE_FILE = $$(_SOURCE_DIRECTORY)$$*.$(SRC_SOURCE_EXTENSION)
+$(_1): _DEPENDENCY_FILE = $$*.$(BUILD_DEPENDENCY_EXTENSION)
+$(_1): _OBJECT_FILE = $$@
 
-$(1): %.$(BUILD_OBJECT_EXTENSION): \
+$(_1): _CXXFLAGS = $$(call get_extended_cxxflags,$$(_SOURCE_FILE))
+
+$(_1): %.$(BUILD_OBJECT_EXTENSION): \
 \
 	$$$$(_SOURCE_FILE) \
 	$$$$(call get_resolved_dependencies,$$$$(_DEPENDENCY_FILE)) \
