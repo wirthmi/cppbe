@@ -38,11 +38,11 @@
 # are given, only a static library file defined below in a BUILD_LIBRARY_FILE
 # variable will be built
 
-#BUILD_EXECUTABLES = project
+#BUILD_EXECUTABLE_FILES = project
 
 
 # name of final static library file constructed from all object files except
-# the ones related to BUILD_EXECUTABLES variable mentioned above
+# the ones related to BUILD_EXECUTABLE_FILES variable mentioned above
 
 #BUILD_LIBRARY_FILE = libproject.a
 

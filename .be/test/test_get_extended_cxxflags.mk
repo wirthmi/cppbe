@@ -17,11 +17,11 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 
+_SOURCE_FILE = $(PATH_TO_SRC_DIRECTORY)/$(firstword \
+	$(BUILD_EXECUTABLE_FILES)).$(SRC_SOURCE_EXTENSION)
+
 ifneq \
-"$(call \
-	get_extended_cxxflags, \
-	$(PATH_TO_SRC_DIRECTORY)/$(word 1,$(BUILD_EXECUTABLES)).$(SRC_SOURCE_EXTENSION) \
-)" \
+"$(call get_extended_cxxflags,$(_SOURCE_FILE))" \
 "$(CXXFLAGS) -DWAY_TO_SET_FILE_SPECIFIC_CXXFLAGS"
 $(warning failed: \
 	get_extended_cxxflags > constructs CXXFLAGS correctly on bare build \
