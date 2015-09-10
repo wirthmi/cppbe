@@ -40,17 +40,17 @@ PATHS_TO_SRC_SOURCE_FILES = $(addprefix \
 
 # derive paths to object files relative to build/ directory
 
-BUILD_OBJECTS = $(patsubst \
+BUILD_OBJECT_FILES = $(patsubst \
 	%.$(SRC_SOURCE_EXTENSION), \
 	%.$(BUILD_OBJECT_EXTENSION), \
 	$(SRC_SOURCE_FILES) \
 )
 
-BUILD_OBJECTS_ONLY_MAIN = $(addsuffix \
+BUILD_OBJECT_FILES_ONLY_MAIN = $(addsuffix \
 	.$(BUILD_OBJECT_EXTENSION),$(BUILD_EXECUTABLE_FILES))
 
-BUILD_OBJECTS_EXCEPT_MAIN = $(filter-out \
-	$(BUILD_OBJECTS_ONLY_MAIN),$(BUILD_OBJECTS))
+BUILD_OBJECT_FILES_EXCEPT_MAIN = $(filter-out \
+	$(BUILD_OBJECT_FILES_ONLY_MAIN),$(BUILD_OBJECT_FILES))
 
 
 # create paths to executable and library files incl. path to build/ directory

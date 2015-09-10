@@ -34,10 +34,10 @@ $(eval $(call place_executable_files_building_target, \
 
 $(eval $(call place_library_file_building_target, \
 	$(BUILD_LIBRARY_FILE), \
-	$(BUILD_OBJECTS_EXCEPT_MAIN) \
+	$(BUILD_OBJECT_FILES_EXCEPT_MAIN) \
 ))
 
 $(eval $(call place_object_files_building_target, \
-	$(BUILD_OBJECTS), \
+	$(BUILD_OBJECT_FILES), \
 	$(PATH_TO_SRC_DIRECTORY) \
 ))
