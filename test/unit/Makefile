@@ -25,7 +25,7 @@ _CATCH = catch
 
 _SOURCE_FILES = \
 	$(_CATCH).$(SRC_SOURCE_EXTENSION) \
-	$(call find_by_regexp,./,test_[a-z_]+\.$(SRC_SOURCE_EXTENSION))
+	$(call find_by_regexp,./,test_[a-z0-9_]+\.$(SRC_SOURCE_EXTENSION))
 
 _OBJECT_FILES = $(patsubst \
 	%.$(SRC_SOURCE_EXTENSION),%.$(BUILD_OBJECT_EXTENSION),$(_SOURCE_FILES))
