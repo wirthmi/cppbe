@@ -22,3 +22,5 @@ include $(PATH_TO_BE_TARGET_DIRECTORY)/recursion.mk
 
 
 all clean: _recurse-%-$$@
+
+$(RECURSE_SLAVES): _recurse-$$@-all
