@@ -25,7 +25,7 @@ EDITOR := $(word 1,$(EDITOR) $(shell echo -n $${VISUAL} $${EDITOR}) $(VIM))
 SRC_HEADER_FILES = $(call find_by_regexp, \
 	$(PATH_TO_SRC_DIRECTORY),.*\.($(SRC_HEADER_EXTENSIONS)))
 
-SRC_SOURCES = $(call find_by_regexp, \
+SRC_SOURCE_FILES = $(call find_by_regexp, \
 	$(PATH_TO_SRC_DIRECTORY),.*\.$(SRC_SOURCE_EXTENSION))
 
 
@@ -34,13 +34,17 @@ SRC_SOURCES = $(call find_by_regexp, \
 PATHS_TO_SRC_HEADER_FILES = $(addprefix \
 	$(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADER_FILES))
 
-PATHS_TO_SRC_SOURCES = $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_SOURCES))
+PATHS_TO_SRC_SOURCE_FILES = $(addprefix \
+	$(PATH_TO_SRC_DIRECTORY)/,$(SRC_SOURCE_FILES))
 
 
 # derive paths to object files relative to build/ directory
 
 BUILD_OBJECTS = $(patsubst \
-	%.$(SRC_SOURCE_EXTENSION),%.$(BUILD_OBJECT_EXTENSION),$(SRC_SOURCES))
+	%.$(SRC_SOURCE_EXTENSION), \
+	%.$(BUILD_OBJECT_EXTENSION), \
+	$(SRC_SOURCE_FILES) \
+)
 
 BUILD_OBJECTS_ONLY_MAIN = $(addsuffix \
 	.$(BUILD_OBJECT_EXTENSION),$(BUILD_EXECUTABLE_FILES))
