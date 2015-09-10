@@ -36,7 +36,7 @@ $(_1): _TARGET = $$(notdir $$@)
 
 $(_1): _force
 
-	@ $(MAKE) -C $$(_SLAVE)/ $$(_TARGET)
+	@ $$(MAKE) -C $$(_SLAVE)/ $$(_TARGET)
 
 endef
 
