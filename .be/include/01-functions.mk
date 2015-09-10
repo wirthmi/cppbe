@@ -48,6 +48,16 @@ $(shell
 endef
 
 
+# usage: $(call map,function,words)
+
+define map
+$(eval
+	_FUNCTION = $(call trim,$(1))
+
+)$(foreach _WORD,$(2),$(call $(_FUNCTION),$(_WORD)))
+endef
+
+
 # usage: $(call filter_by_regexp,regexp,words)
 
 define filter_by_regexp
