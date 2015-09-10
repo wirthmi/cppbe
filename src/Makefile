@@ -27,8 +27,8 @@ all clean: _force
 # process could be launched also in a recursive mode but then it wouldn't be
 # possible to let the make apply style just on one selected file
 
-style: $(SRC_HEADERS) $(SRC_SOURCES)
+style: $(SRC_HEADER_FILES) $(SRC_SOURCES)
 
-$(SRC_HEADERS) $(SRC_SOURCES): _force
+$(SRC_HEADER_FILES) $(SRC_SOURCES): _force
 
 	@ $(ASTYLE) $(SRC_ASTYLE_RULES) $@

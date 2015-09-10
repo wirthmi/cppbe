@@ -22,7 +22,7 @@ EDITOR := $(word 1,$(EDITOR) $(shell echo -n $${VISUAL} $${EDITOR}) $(VIM))
 
 # lookup for paths to header and source files relative to src/ directory
 
-SRC_HEADERS = $(call find_by_regexp, \
+SRC_HEADER_FILES = $(call find_by_regexp, \
 	$(PATH_TO_SRC_DIRECTORY),.*\.($(SRC_HEADER_EXTENSIONS)))
 
 SRC_SOURCES = $(call find_by_regexp, \
@@ -31,7 +31,8 @@ SRC_SOURCES = $(call find_by_regexp, \
 
 # create paths to header and source files incl. path to src/ directory
 
-PATHS_TO_SRC_HEADERS = $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADERS))
+PATHS_TO_SRC_HEADER_FILES = $(addprefix \
+	$(PATH_TO_SRC_DIRECTORY)/,$(SRC_HEADER_FILES))
 
 PATHS_TO_SRC_SOURCES = $(addprefix $(PATH_TO_SRC_DIRECTORY)/,$(SRC_SOURCES))
 
