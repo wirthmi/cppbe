@@ -28,9 +28,10 @@ _recurse-%: _SLAVES = $(filter $(call cut,-,1,$*),$(RECURSE_SLAVES))
 _recurse-%: _TARGET = $(call cut,-,2,$*)
 
 _recurse-%: \
-$$(addprefix _recurse_submake-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
+\
+	$$(addprefix _recurse_submake-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
 
-	@ # pattern rule recipes can't be empty, single comment is sufficient
+	@ :
 
 _recurse_submake-%: _SLAVE = $(call cut,-,1,$*)
 _recurse_submake-%: _TARGET = $(call cut,-,2,$*)
