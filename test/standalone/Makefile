@@ -16,34 +16,39 @@
 
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
+
 include ../../.be/init.mk
+include $(PATH_TO_BE_TARGET_DIRECTORY)/clean.mk
 
-include $(PATH_TO_TARGET_DIRECTORY)/clean.mk
 
-TEST_SOURCES = $(call FUNCTION_FIND_FILES, \
-	./,test_[a-z_]+(-[a-z_]+)?\.$(SRC_SOURCE_EXTENSION))
+_SOURCE_FILES = $(call find_by_regexp, \
+	./,test_[a-z0-9_]+(-[a-z0-9_]+)?\.$(SRC_SOURCE_EXTENSION))
+_SOURCE_FILES_ONLY_MAIN = $(call filter_by_regexp, \
+	(^|/)[^-]+\.$(SRC_SOURCE_EXTENSION)$$,$(_SOURCE_FILES))
 
-TEST_OBJECTS = \
-	$(TEST_SOURCES:.$(SRC_SOURCE_EXTENSION)=.$(BUILD_OBJECT_EXTENSION))
-TEST_OBJECTS_ONLY_MAIN = $(call FUNCTION_FILTER_BY_REGEXP \
-	,(^|/)[a-z_]+\.$(BUILD_OBJECT_EXTENSION)$$,$(TEST_OBJECTS))
+_OBJECT_FILES = $(patsubst \
+	%.$(SRC_SOURCE_EXTENSION),%.$(BUILD_OBJECT_EXTENSION),$(_SOURCE_FILES))
 
-TEST_EXECUTABLES = \
-	$(TEST_OBJECTS_ONLY_MAIN:.$(BUILD_OBJECT_EXTENSION)=)
+_EXECUTABLE_FILES = $(patsubst \
+	%.$(SRC_SOURCE_EXTENSION),%,$(_SOURCE_FILES_ONLY_MAIN))
 
-all: $(TEST_EXECUTABLES)
 
-$(eval $(call FUNCTION_GET_EXECUTABLES_BUILDING_TARGET, \
-	$(TEST_EXECUTABLES), \
-	$$$$(call FUNCTION_FILTER_BY_REGEXP,^%,$(TEST_OBJECTS)) \
-	$(PATH_TO_BUILD_LIBRARY) \
+all: $(_EXECUTABLE_FILES) _force
+
+clean: _clean
+
+
+$(eval $(call place_executable_files_building_target, \
+	$(_EXECUTABLE_FILES), \
+	$(PATH_TO_BUILD_LIBRARY_FILE), \
+	$$(filter $$*%,$(_OBJECT_FILES)) \
 ))
 
-$(eval $(call FUNCTION_GET_OBJECTS_BUILDING_TARGET, \
-	$(TEST_OBJECTS), \
-	%.$(SRC_SOURCE_EXTENSION) \
+$(eval $(call place_object_files_building_target, \
+	$(_OBJECT_FILES), \
+	./ \
 ))
 
-$(eval $(call FUNCTION_GET_FORCING_SUBMAKES_TARGET, \
-	$(PATH_TO_BUILD_LIBRARY) \
+$(eval $(call place_make_slaves_target, \
+	$(PATH_TO_BUILD_LIBRARY_FILE) \
 ))
