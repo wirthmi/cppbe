@@ -79,18 +79,24 @@
 # user defined compilator and linker settings including dependencies on some
 # external libraries as in OpenCV example below
 
-# notice that everything could be defined globally or just for a specific
-# platform, currently GNU/Linux and Cygwin plaforms are well recognized
+# notice that everything could be defined globally or just for a specific plat-
+# form or session, currently GNU/Linux and Cygwin plaforms are well recognized
+# and session could be anything passed as make's command line argument (default
+# is release)
 
 #CXXFLAGS += -Wall -O3 -std=c++11
 #CXXFLAGS += -g -DDEBUG_MODE_
 
 #ifeq "$(BUILD_PLATFORM)" "linux"
-#CXXFLAGS += -DWAY_TO_SET_LINUX_SPECIFIC_CXXFLAGS
+#CXXFLAGS += -DWAY_TO_SET_LINUX_PLATFORM_SPECIFIC_CXXFLAGS
 #endif
 
 #ifeq "$(BUILD_PLATFORM)" "cygwin"
-#CXXFLAGS += -DWAY_TO_SET_CYGWIN_SPECIFIC_CXXFLAGS
+#CXXFLAGS += -DWAY_TO_SET_CYGWIN_PLATFORM_SPECIFIC_CXXFLAGS
+#endif
+
+#ifeq "$(BUILD_SESSION)" "release"
+#CXXFLAGS += -DWAY_TO_SET_RELEASE_SESSION_SPECIFIC_CXXFLAGS
 #endif
 
 #CXXFLAGS += $(shell pkg-config --cflags opencv)
