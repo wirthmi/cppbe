@@ -1,3 +1,4 @@
-.beclean
+.becleanup
+
 test_*
 !test_*.cpp

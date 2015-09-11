@@ -17,27 +17,14 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 
-RECURSE_SLAVES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
+include ../../.be/init.mk
 
 
-# a pattern rule target formed as _recurse-<filter>-<target> which selects sub-
-# directories containing Makefiles - let's call them slaves, filters them by
-# the <filter> field and then launches appropriate submakes making the <target>
-# on them
+$(info All tests will be passed when no warning is reported below.)
 
-_recurse-%: _SLAVES = $(filter $(call cut,-,1,$*),$(RECURSE_SLAVES))
-_recurse-%: _TARGET = $(call cut,-,2,$*)
+include $(wildcard test_*.mk)
 
-_recurse-%: \
-\
-	$$(addprefix _recurse_submake-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
-
-	@ :
+$(info Done!)
 
 
-_recurse_submake-%: _SLAVE = $(call cut,-,1,$*)
-_recurse_submake-%: _TARGET = $(call cut,-,2,$*)
-
-_recurse_submake-%: _force
-
-	@ $(MAKE) -C $(_SLAVE)/ $(_TARGET)
+all clean: _force
