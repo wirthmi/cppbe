@@ -129,27 +129,29 @@ endef
 # usage: $(call get_cleanup_registrar)
 
 define get_cleanup_registrar
-$(strip awk '
-	BEGIN {
-		cleanup_file = "$(BUILD_CLEANUP_FILE)";
-		while ( ( getline cleanup < cleanup_file ) > 0 ) {
-			cleanups[cleanup] = 0;
-		}
-	}
-	{
-		for ( i = 1; i <= NF; ++i ) {
-			cleanups[$$i] = 1;
-		}
-	}
-	END {
-		for ( cleanup in cleanups ) {
-			print cleanup > cleanup_file;
-			if ( cleanups[cleanup] == 1 ) {
-				print cleanup;
+$(strip
+	awk '
+		BEGIN {
+			cleanup_file = "$(BUILD_CLEANUP_FILE)";
+			while ( ( getline cleanup < cleanup_file ) > 0 ) {
+				cleanups[cleanup] = 0;
 			}
 		}
-	}
-')
+		{
+			for ( i = 1; i <= NF; ++i ) {
+				cleanups[$$i] = 1;
+			}
+		}
+		END {
+			for ( cleanup in cleanups ) {
+				print cleanup > cleanup_file;
+				if ( cleanups[cleanup] == 1 ) {
+					print cleanup;
+				}
+			}
+		}
+	'
+)
 endef
 
 
