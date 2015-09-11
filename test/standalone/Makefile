@@ -33,7 +33,7 @@ _EXECUTABLE_FILES = $(patsubst \
 	%.$(SRC_SOURCE_EXTENSION),%,$(_SOURCE_FILES_ONLY_MAIN))
 
 
-all: $(_EXECUTABLE_FILES) _force
+all: $(_EXECUTABLE_FILES)
 
 clean: _clean
 
