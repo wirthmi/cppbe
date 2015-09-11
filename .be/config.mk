@@ -85,7 +85,6 @@
 # is release)
 
 #CXXFLAGS += -Wall -O3 -std=c++11
-#CXXFLAGS += -g -DDEBUG_MODE_
 
 #ifeq "$(BUILD_PLATFORM)" "linux"
 #CXXFLAGS += -DWAY_TO_SET_LINUX_PLATFORM_SPECIFIC_CXXFLAGS
@@ -97,6 +96,10 @@
 
 #ifeq "$(BUILD_SESSION)" "release"
 #CXXFLAGS += -DWAY_TO_SET_RELEASE_SESSION_SPECIFIC_CXXFLAGS
+#endif
+
+#ifeq "$(BUILD_SESSION)" "develop"
+#CXXFLAGS += -g -DDEBUG_MODE_
 #endif
 
 #CXXFLAGS += $(shell pkg-config --cflags opencv)
