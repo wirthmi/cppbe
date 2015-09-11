@@ -82,11 +82,13 @@ endef
 # usage: $(call get_regexp_finder,path_to_directory,regexp)
 
 define get_regexp_finder
-find $(1)
-	-type f
-	-regextype posix-extended
-	-iregex '^([^/]*/)*$(call trim,$(2))$$'
-	-printf '%P\n'
+$(strip
+	find $(1)
+		-type f
+		-regextype posix-extended
+		-iregex '^([^/]*/)*$(call trim,$(2))$$'
+		-printf '%P\n'
+)
 endef
 
 

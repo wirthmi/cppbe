@@ -1,6 +1,6 @@
-.becleanup
+*
 
-html/
-index.html
+!.gitignore
+!Makefile
 
-doxygen_*
+!doxygen.conf
