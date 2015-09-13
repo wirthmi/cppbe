@@ -17,27 +17,12 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 
-RECURSE_SLAVES = $(patsubst %/,%,$(dir $(wildcard */Makefile)))
+_DETECTED_PLATFORM = $(call detect_platform)
 
-
-# a pattern rule target formed as _recurse-<filter>-<target> which selects sub-
-# directories containing Makefiles - let's call them slaves, filters them by
-# the <filter> field and then launches appropriate submakes making the <target>
-# on them
-
-_recurse-%: _SLAVES = $(filter $(call cut,-,1,$*),$(RECURSE_SLAVES))
-_recurse-%: _TARGET = $(call cut,-,2,$*)
-
-_recurse-%: \
-\
-	$$(addprefix _recurse_submake-,$$(addsuffix -$$(_TARGET),$$(_SLAVES)))
-
-	@ :
-
-
-_recurse_submake-%: _SLAVE = $(call cut,-,1,$*)
-_recurse_submake-%: _TARGET = $(call cut,-,2,$*)
-
-_recurse_submake-%: _force
-
-	@ $(MAKE) -C $(_SLAVE)/ $(_TARGET)
+ifneq "$(_DETECTED_PLATFORM)" "linux"
+ifneq "$(_DETECTED_PLATFORM)" "cygwin"
+$(warning failed: \
+	detect_platform > returns linux or cygwin \
+)
+endif
+endif
