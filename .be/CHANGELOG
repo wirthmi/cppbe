@@ -1,3 +1,40 @@
+=== v1.0.0rc0 (2015-09-13) =========
+
+- add official support for 32-bit / 64-bit Cygwin platform
+
+- add posibility to define platform / session / source file specific
+  compilation flags, see .be/config.mk and src/project.cpp files for usage
+  example
+
+- let astyle also indent preprocessor directives in source files
+
+- add new global target ALL that makes really everything, the primary all
+  target now recurses just into the build/ directory because this is what is
+  needed in 90% of cases
+
+- enable automatic launching of unit tests, now launching doesn't have to be
+  requested again
+
+- allow standalone tests to consist of more than one source file, usage is
+  following - test_example.cpp should contain main() function, files
+  test_example-something.cpp and test_example-anything.cpp are separate but
+  related compilation units and therefore they are all compiled into a single
+  executable named test_example
+
+- upgrade Catch unit test framework to v1.2.1
+
+- allow numbers in unit and standalone test file names
+
+- refactor and clean up whole build enviroment code base - use better code
+  style, improve naming and indentation rules, use target specific variables
+  and separate code into functions and shared targets, prettify a lot of
+  various paths passed to compiler and other tools to make their output more
+  readable, add unit tests for build environment itself, ...
+
+- change doc/ directory Makefile to be more general (should allow to add
+  support for e.g. man pages one day)
+
+
 === v0.4.0 (2015-08-28) =========
 
 - allow to add file specific CXXFLAGS via code commentary, see the project.cpp
