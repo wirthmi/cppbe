@@ -21,6 +21,9 @@ include ../../.be/init.mk
 include $(PATH_TO_BE_TARGET_DIRECTORY)/clean.mk
 
 
+CXXFLAGS += -Wno-parentheses
+
+
 _CATCH = catch
 
 _SOURCE_FILES = \
