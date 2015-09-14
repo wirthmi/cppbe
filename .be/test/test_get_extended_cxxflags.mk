@@ -22,7 +22,7 @@ _SOURCE_FILE = $(PATH_TO_SRC_DIRECTORY)/$(firstword \
 
 ifneq \
 "$(call get_extended_cxxflags,$(_SOURCE_FILE))" \
-"$(CXXFLAGS) -DWAY_TO_SET_FILE_SPECIFIC_CXXFLAGS"
+"$(CXXFLAGS) -DWAY_TO_SET_SOURCE_FILE_SPECIFIC_CXXFLAGS"
 $(warning failed: \
 	get_extended_cxxflags > constructs CXXFLAGS correctly on bare build \
 	environment, anywhere else would fail \
