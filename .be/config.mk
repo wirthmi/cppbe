@@ -106,6 +106,6 @@
 #LDFLAGS += $(shell pkg-config --libs-only-L opencv)
 #LDLIBS += $(shell pkg-config --libs-only-l opencv)
 
-#CXXFLAGS += -I$(PATH_TO_LIB_DIRECTORY)/libsomething/include/
-#LDFLAGS += -L$(PATH_TO_LIB_DIRECTORY)/libsomething/build/
-#LDLIBS += -lsomething
+#CXXFLAGS += -I$(call prettify_path,$(PATH_TO_LIB_DIRECTORY)/libany/include/)
+#LDFLAGS += -L$(call prettify_path,$(PATH_TO_LIB_DIRECTORY)/libany/build/)
+#LDLIBS += -lany
