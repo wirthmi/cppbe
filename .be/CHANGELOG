@@ -1,3 +1,11 @@
+=== v1.0.0rc1 (2015-09-14) =========
+
+- fix issue with annoying warnings about parentheses from new version of the
+  Catch framework introduced in previous release
+
+- improve examples in .be/config.mk file
+
+
 === v1.0.0rc0 (2015-09-13) =========
 
 - add official support for 32-bit / 64-bit Cygwin platform
