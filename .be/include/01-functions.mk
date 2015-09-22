@@ -97,7 +97,7 @@ endef
 define get_extended_cxxflags
 $(shell
 	echo -n '$(CXXFLAGS)';
-	sed -n '/\/\/\s*CXXFLAGS\s*=/{s/^.*=//;p;q}' $(1)
+	sed -n '/\/\/\s*CXXFLAGS\s*=/{s/^.*CXXFLAGS\s*=//;p;q}' $(1)
 )
 endef
 
