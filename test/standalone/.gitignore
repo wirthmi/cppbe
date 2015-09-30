@@ -1,4 +1,5 @@
 .becleanup
 
 test_*
+!test_*.hpp
 !test_*.cpp
