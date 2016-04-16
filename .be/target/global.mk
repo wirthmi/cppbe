@@ -20,7 +20,7 @@
 .SECONDEXPANSION:
 
 
-# phony target that always needs to be rebuilt and does nothing
+# a phony target that always needs to be rebuilt and does nothing
 
 .PHONY: _force
 _force:
