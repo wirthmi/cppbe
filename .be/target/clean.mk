@@ -31,10 +31,10 @@ _clean: _force
 _clean_force: _force
 
 	@ cat $(BUILD_CLEANUP_FILE) \
-	| xargs -t -n 1 rm -f
+	| xargs -t -n 1 -r rm -f
 
 	@ find ./ -depth -type d -empty \
 	| sed 's#^\./##;s#/*$$#/#' \
-	| xargs -t -n 1 rmdir
+	| xargs -t -n 1 -r rmdir
 
 	rm -f $(BUILD_CLEANUP_FILE)
