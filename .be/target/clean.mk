@@ -17,9 +17,9 @@
 # see http://www.gnu.org/software/make/manual/make.html for Makefile syntax
 
 
-# attempts to delete all files tracked by the cleanup file and always deletes
-# empty directories which Git won't track anyway, see register_cleanup function
-# for more information about the cleanup concept
+# target that deletes, if necessary, all files tracked by the cleanup file and
+# also all empty subdirectories which Git won't track anyway,
+# see register_cleanup function for more information about the cleanup concept
 
 _clean: _force
 
