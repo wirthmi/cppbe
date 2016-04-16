@@ -23,9 +23,17 @@
 
 _clean: _force
 
-	if [ -r $(BUILD_CLEANUP_FILE) ]; then \
-		xargs -a $(BUILD_CLEANUP_FILE) -d '\n' -I {} rm -f {}; \
-		rm $(BUILD_CLEANUP_FILE); \
+	@ if [ -e $(BUILD_CLEANUP_FILE) ]; then \
+		$(MAKE) _clean_force; \
 	fi
 
-	find ./ -depth -type d -empty -exec rmdir {} \;
+_clean_force: _force
+
+	@ cat $(BUILD_CLEANUP_FILE) \
+	| xargs -t -n 1 rm -f
+
+	@ find ./ -depth -type d -empty \
+	| sed 's#^\./##;s#/*$$#/#' \
+	| xargs -t -n 1 rmdir
+
+	rm -f $(BUILD_CLEANUP_FILE)
