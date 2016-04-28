@@ -24,11 +24,11 @@
 _clean: _force
 
 	@ if [ -e $(BUILD_CLEANUP_FILE) ]; then \
-		$(MAKE) _clean_force; \
+		$(MAKE) _clean_worker; \
 	fi
 
 
-_clean_force: _force
+_clean_worker: _force
 
 	@ cat $(BUILD_CLEANUP_FILE) \
 	| xargs -t -n 1 -r rm -f
