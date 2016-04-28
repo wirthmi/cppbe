@@ -1,5 +1,5 @@
 # Smart GNU Make based build environment for C++.
-# Copyright (C) 2015  Michal Wirth <wirthmi@rankl.cz>
+# Copyright (C) 2015-2016  Michal Wirth <wirthmi@rankl.cz>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
